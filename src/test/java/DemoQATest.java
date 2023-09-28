@@ -4,6 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.WheelInput;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,6 +14,11 @@ import java.time.Duration;
 import static org.junit.Assert.assertEquals;
 
 public class DemoQATest {
+    private void scrollPastElement(WebDriver driver, WebElement element) {
+	WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(element);
+	new Actions(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+    }
+
     @Test
     public void test() {
         final String USERNAME = "research_paper";
@@ -32,7 +39,9 @@ public class DemoQATest {
         driver.findElement(By.id("login")).click();
 
         // Click "Go to Store" button
-        driver.findElement(By.id("gotoStore")).click();
+	WebElement storeButton = driver.findElement(By.id("gotoStore"));
+	scrollPastElement(driver, storeButton);
+        storeButton.click();
 
         // Click on the first book title
         driver.findElement(By.id("see-book-Git Pocket Guide")).click();
@@ -41,10 +50,13 @@ public class DemoQATest {
         String bookName = driver.findElement(By.cssSelector("#title-wrapper #userName-value")).getText();
 
         // Add the book to the collection
-        driver.findElement(By.id("addNewRecordButton")).click();
+	WebElement addNewRecordButton = driver.findElement(By.id("addNewRecordButton"));
+        addNewRecordButton.click();
 
         // Click profile button
-        driver.findElement(By.cssSelector(".show #item-3")).click();
+	WebElement profileButton = driver.findElement(By.cssSelector(".show #item-3"));
+	scrollPastElement(driver, profileButton);
+        profileButton.click();
 
         // Wait until the profile page is loaded. This takes a while.
         WebElement profileElement = driver.findElement(By.id("books-wrapper"));
