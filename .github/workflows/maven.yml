@@ -36,4 +36,4 @@ jobs:
     needs: setup
     steps:
       - name: Launch Test
-      - run: mvn clean test
+        run: mvn clean test
