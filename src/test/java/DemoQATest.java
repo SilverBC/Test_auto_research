@@ -1,5 +1,6 @@
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -24,10 +25,12 @@ public class DemoQATest {
         final String USERNAME = "research_paper";
         final String PASSWORD = "1tq52rw43E!";
 
+	Dimension dimension = new Dimension(1920, 1080);
 	ChromeOptions options = new ChromeOptions();
 	options.addArguments("--headless=new");
         WebDriver driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(4000));
+	driver.manage().window().setSize(dimension);
         Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // Load the login page
