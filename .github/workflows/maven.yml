@@ -30,5 +30,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
+      # Workflow telemetry
+      - name: Collect Workflow Telemetry
+        uses: runforesight/workflow-telemetry-action@v1
+      # Launch the tests
       - name: Launch Test
         run: mvn clean test
