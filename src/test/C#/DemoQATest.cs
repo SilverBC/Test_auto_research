@@ -19,7 +19,7 @@ public class DemoQATest
         string password = "1tq52rw43E!";
 
         ChromeOptions options = new ChromeOptions();
-        // options.AddArgument("--headless=new");
+        options.AddArgument("--headless=new");
         IWebDriver driver = new ChromeDriver(options);
         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(4);
         driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
