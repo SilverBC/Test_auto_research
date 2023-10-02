@@ -15,8 +15,7 @@ class DemoQATest < Test::Unit::TestCase
   end
 
   def scroll_past_element(element)
-    wait = Selenium::WebDriver::Wait.new(timeout: 10)
-    wait.until { @driver.action.move_to(element).click.perform }
+    @driver.switch_to.active_element.send_keys(:page_down)
   end
 
   def test_demoqa
@@ -30,10 +29,11 @@ class DemoQATest < Test::Unit::TestCase
 
     store_button = @driver.find_element(id: 'gotoStore')
     scroll_past_element(store_button)
+    store_button = @driver.find_element(id: 'gotoStore')
     store_button.click
 
     @driver.find_element(xpath: "//*[@id='see-book-Git Pocket Guide']").click  # id is supposed to be used here instead of xpath
-    book_name = @driver.find_element(css: '#title-wrapper #userName-value').text
+    book_name = @driver.find_element(xpath: '//*[@id="title-wrapper"]//*[@id="userName-value"]').text # css #title_wrapper #userName-value is supposed to be here
     add_new_record_button = @driver.find_element(id: 'addNewRecordButton')
     add_new_record_button.click
 
