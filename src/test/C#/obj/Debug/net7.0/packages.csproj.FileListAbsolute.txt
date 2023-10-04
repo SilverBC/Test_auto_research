@@ -9,6 +9,7 @@ C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\
 C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\packages.runtimeconfig.json
 C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\packages.dll
 C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\packages.pdb
+C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\SeleniumExtras.WaitHelpers.dll
 C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\Microsoft.TestPlatform.CoreUtilities.dll
 C:\Users\user\Desktop\TA-Research\ta-lang-comparison-java\src\test\C#\bin\Debug\net7.0\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll

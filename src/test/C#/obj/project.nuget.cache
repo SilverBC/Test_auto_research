@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "+s/GKGlyXmpR5obrvRq9mBuOyJtMAwvvYJloXpDifRCu1zWXl9MobA8WQRWiSBMHBk1geP8WQ4WtKEsa8QGKCQ==",
+  "dgSpecHash": "T3w3eRiipViBRr74Jj0kaoLW2ugoyCOWKgsINvKMSDthvds/zpnlMweyPtGT6l7viSnlYui/NavZytF3J257cw==",
   "success": true,
   "projectFilePath": "C:\\Users\\user\\Desktop\\TA-Research\\ta-lang-comparison-java\\src\\test\\C#\\packages.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\dotnetseleniumextras.waithelpers\\3.11.0\\dotnetseleniumextras.waithelpers.3.11.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.codecoverage\\17.2.0\\microsoft.codecoverage.17.2.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.net.test.sdk\\17.2.0\\microsoft.net.test.sdk.17.2.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
