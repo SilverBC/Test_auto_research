@@ -24,3 +24,72 @@ card
 12. Press the Finish button
 13. Validate that the success screen is visible.
 
+# Running the tests
+
+Disclaimer: for all of the instructions to work properly (except
+Java), you need to be in the relevant directory. For example, before
+running the python project, make sure to go into the `src/test/python`
+directory.
+
+## Java
+
+For this test to work, you need to be at the project's root directory.
+
+If you want to always compile first, run:
+
+```
+mvn clean test
+```
+
+Otherwise:
+
+```
+mvn test
+```
+
+## C#
+
+First, install the .NET core SDK. On ubuntu, this can be done with:
+
+```
+sudo apt-get update && sudo apt-get install -y dotnet-sdk-7.0
+```
+
+After that, run the test via:
+
+```
+dotnet test
+```
+
+## JavaScript
+
+Go to `src/test/JavaScript`, then run:
+
+```
+npm install
+```
+
+Afterwards, run the test with:
+
+```
+npm test
+```
+
+## Python
+
+Assuming `requests` and `selenium` libraries are installed, run:
+
+```
+python CommerceTest.py
+```
+
+## Ruby
+
+Run:
+
+Assuming the `selenium-webdriver` and `test-unit` gems are installed, run:
+
+```
+ruby CommerceTest.rb
+```
+

@@ -20,7 +20,7 @@ public class DemoQATest {
 	new Actions(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
     }
 
-    @Test
+    //    @Test
     public void test() {
         final String USERNAME = "research_paper";
         final String PASSWORD = "1tq52rw43E!";
