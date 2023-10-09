@@ -2,6 +2,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -220,7 +221,12 @@ public class CommerceTest {
         driver.findElement(By.id("react-burger-menu-btn")).click();
         //click on Reset App State
         driver.findElement(By.id("reset_sidebar_link")).click();
-        driver.findElement(By.id("react-burger-cross-btn")).click();
+        // Click on the close sidebar button using JS.
+        // This was necessary because normal click was not waiting 
+        // for the CSS animation to be over, resulting in an
+        // element click interception.
+        WebElement closeButton = driver.findElement(By.id("react-burger-cross-btn"));
+        ((JavascriptExecutor)driver).executeScript("arguments[0].click();", closeButton);
         //check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
         assertTrue(driver.findElements(By.className("shopping_cart_badge")).size() < 1);
 
@@ -230,8 +236,6 @@ public class CommerceTest {
         assertTrue(driver.findElement(By.id("remove-sauce-labs-fleece-jacket")).isDisplayed());
         assertTrue(driver.findElement(By.id("remove-sauce-labs-onesie")).isDisplayed());
         assertTrue(driver.findElement(By.id("remove-test.allthethings()-t-shirt-(red)")).isDisplayed());
-
-        driver.findElement(By.id("react-burger-cross-btn")).click();
     }
 
     @Test

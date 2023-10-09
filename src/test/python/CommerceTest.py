@@ -1,4 +1,3 @@
-import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,7 +6,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 
-class CommerceTest(unittest.TestCase):
+class TestCommerce():
     
     USERNAME = "standard_user"
     LOCKEDUSERNAME = "locked_out_user"
@@ -59,7 +58,7 @@ class CommerceTest(unittest.TestCase):
 
         cart_page_element = self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "cart_list")))
         cart_item_name = self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text
-        self.assertEqual(cart_item_name, "Sauce Labs Backpack")
+        assert cart_item_name == "Sauce Labs Backpack"
 
         self.driver.find_element(By.ID, "checkout").click()
         checkout_page_element = self.wait.until(EC.visibility_of_element_located((By.ID, "checkout_info_container")))
@@ -70,14 +69,13 @@ class CommerceTest(unittest.TestCase):
         self.driver.find_element(By.ID, "continue").click()
 
         checkout_item_name = self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text
-        self.assertEqual(checkout_item_name, "Sauce Labs Backpack")
+        assert checkout_item_name == "Sauce Labs Backpack"
 
         self.driver.find_element(By.ID, "finish").click()
         success_is_displayed = self.driver.find_element(By.ID, "checkout_complete_container").is_displayed()
-        self.assertTrue(success_is_displayed)
+        assert success_is_displayed
 
-        self.tearDown()
-        
+        self.tearDown()      
         
     def test_assert_item_name_on_item_info_page(self):
         self.set_up("https://www.saucedemo.com")
@@ -88,10 +86,10 @@ class CommerceTest(unittest.TestCase):
 
         # Check that texts exist on the site
         # Sauce Labs Backpack
-        self.assertEqual(self.driver.find_element(By.CLASS_NAME, "inventory_details_name").text, "Sauce Labs Backpack")
+        assert self.driver.find_element(By.CLASS_NAME, "inventory_details_name").text == "Sauce Labs Backpack"
         
         expected_desc = "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection."
-        self.assertEqual(self.driver.find_element(By.CLASS_NAME, "inventory_details_desc").text, expected_desc)
+        assert self.driver.find_element(By.CLASS_NAME, "inventory_details_desc").text == expected_desc
         
         self.tearDown()
 
@@ -109,7 +107,7 @@ class CommerceTest(unittest.TestCase):
         tab_list = self.driver.window_handles
         self.driver.switch_to.window(tab_list[1])
 
-        self.assertEqual(self.driver.current_url, "https://www.linkedin.com/company/sauce-labs/")
+        assert self.driver.current_url == "https://www.linkedin.com/company/sauce-labs/"
         self.driver.close()
         self.driver.switch_to.window(tab_list[0])
 
@@ -124,28 +122,28 @@ class CommerceTest(unittest.TestCase):
         # click Z-A
         self.driver.find_element(By.CSS_SELECTOR, "option[value='za']").click()
         # check that the name at the top is "Test.allTheThings() T-Shirt (Red)
-        self.assertEqual(self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text, "Test.allTheThings() T-Shirt (Red)")
+        assert self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text == "Test.allTheThings() T-Shirt (Red)"
 
         # click the filters box
         self.driver.find_element(By.CLASS_NAME, "select_container").click()
         # click A-Z 
         self.driver.find_element(By.CSS_SELECTOR, "option[value='az']").click()
         # check that the name at the top is "Sauce Labs Backpack"
-        self.assertEqual(self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text, "Sauce Labs Backpack")
+        assert self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text == "Sauce Labs Backpack"
 
         # click the filters box
         self.driver.find_element(By.CLASS_NAME, "select_container").click()
         # click low-High
         self.driver.find_element(By.CSS_SELECTOR, "option[value='hilo']").click()
         # check that the name at the top is "Sauce Labs Onesie"
-        self.assertEqual(self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text, "Sauce Labs Fleece Jacket")
+        assert self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text == "Sauce Labs Fleece Jacket"
 
         # click the filters box
         self.driver.find_element(By.CLASS_NAME, "select_container").click()
         # click high-Low
         self.driver.find_element(By.CSS_SELECTOR, "option[value='lohi']").click()
         # check that the name at the top is "Sauce Labs Fleece Jacket"
-        self.assertEqual(self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text, "Sauce Labs Onesie")
+        assert self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text == "Sauce Labs Onesie"
         self.tearDown()
 
     def test_assert_shopping_button_states(self):
@@ -159,7 +157,7 @@ class CommerceTest(unittest.TestCase):
             button.click()
 
         # check that the cart button says 6
-        self.assertEqual(self.driver.find_element(By.CLASS_NAME, "shopping_cart_badge").text, "6")
+        assert self.driver.find_element(By.CLASS_NAME, "shopping_cart_badge").text == "6"
 
         # Click all remove buttons
         buttons_remove = self.driver.find_elements(By.CSS_SELECTOR, "[id^=remove]")
@@ -168,7 +166,7 @@ class CommerceTest(unittest.TestCase):
             button.click()
 
         # check that the cart button says nothing
-        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "shopping_cart_badge")) < 1)
+        assert len(self.driver.find_elements(By.CLASS_NAME, "shopping_cart_badge")) < 1
         self.tearDown()
 
     def test_assert_user_log_in_cache_permanency(self):
@@ -186,7 +184,7 @@ class CommerceTest(unittest.TestCase):
         # Check that items are still in the cart
         self.log_in(self.USERNAME, self.PASSWORD)
 
-        self.assertEqual(self.driver.find_element(By.CLASS_NAME, "shopping_cart_badge").text, "2")    
+        assert self.driver.find_element(By.CLASS_NAME, "shopping_cart_badge").text == "2"
         self.tearDown()
 
     def test_assert_app_reset_functionality(self):  # flaky test
@@ -203,19 +201,22 @@ class CommerceTest(unittest.TestCase):
         self.driver.find_element(By.ID, "react-burger-menu-btn").click()
         # Click on Reset App State
         self.driver.find_element(By.ID, "reset_sidebar_link").click()
-        self.driver.find_element(By.ID, "react-burger-cross-btn").click()
+        # Click on the close sidebar button using JS.
+        # This was necessary because normal click was not waiting 
+        # for the CSS animation to be over, resulting in an
+        # element click interception.
+        self.driver.execute_script("arguments[0].click();", self.driver.find_element(By.ID, "react-burger-cross-btn"))
 
         # Check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
-        self.assertTrue(len(self.driver.find_elements(By.CLASS_NAME, "shopping_cart_badge")) < 1)
+        assert len(self.driver.find_elements(By.CLASS_NAME, "shopping_cart_badge")) < 1
 
-        self.assertTrue(self.driver.find_element(By.ID, "remove-sauce-labs-backpack").is_displayed())
-        self.assertTrue(self.driver.find_element(By.ID, "remove-sauce-labs-bike-light").is_displayed())
-        self.assertTrue(self.driver.find_element(By.ID, "remove-sauce-labs-bolt-t-shirt").is_displayed())
-        self.assertTrue(self.driver.find_element(By.ID, "remove-sauce-labs-fleece-jacket").is_displayed())
-        self.assertTrue(self.driver.find_element(By.ID, "remove-sauce-labs-onesie").is_displayed())
-        self.assertTrue(self.driver.find_element(By.ID, "remove-test.allthethings()-t-shirt-(red)").is_displayed())
+        assert self.driver.find_element(By.ID, "remove-sauce-labs-backpack").is_displayed()
+        assert self.driver.find_element(By.ID, "remove-sauce-labs-bike-light").is_displayed()
+        assert self.driver.find_element(By.ID, "remove-sauce-labs-bolt-t-shirt").is_displayed()
+        assert self.driver.find_element(By.ID, "remove-sauce-labs-fleece-jacket").is_displayed()
+        assert self.driver.find_element(By.ID, "remove-sauce-labs-onesie").is_displayed()
+        assert self.driver.find_element(By.ID, "remove-test.allthethings()-t-shirt-(red)").is_displayed()
 
-        self.driver.find_element(By.ID, "react-burger-cross-btn").click()
         self.tearDown()
     
     def test_assert_error_accessing_without_log_in(self):
@@ -223,7 +224,7 @@ class CommerceTest(unittest.TestCase):
 
         # Assert that the error is the correct one
         expected_error = "Epic sadface: You can only access '/cart.html' when you are logged in."
-        self.assertEqual(expected_error, self.driver.find_element(By.CLASS_NAME, "error-message-container").text)
+        assert expected_error == self.driver.find_element(By.CLASS_NAME, "error-message-container").text
 
         self.log_in(self.USERNAME, self.PASSWORD)
 
@@ -231,7 +232,7 @@ class CommerceTest(unittest.TestCase):
         self.driver.get("https://www.saucedemo.com/cart.html")
 
         # Assert that it worked when you were logged in
-        self.assertTrue(self.driver.find_element(By.ID, "cart_contents_container").is_displayed())
+        assert self.driver.find_element(By.ID, "cart_contents_container").is_displayed()
         self.tearDown()
 
     def test_assert_locked_out_user(self):
@@ -249,16 +250,14 @@ class CommerceTest(unittest.TestCase):
         # Assert the error
         expected_error = "Epic sadface: Sorry, this user has been locked out."
         actual_error = self.driver.find_element(By.CLASS_NAME, "error-message-container").text
-        self.assertEqual(expected_error, actual_error)
+        assert expected_error == actual_error
 
         # Attempt to log in with the normal user
         self.log_in(self.USERNAME, self.PASSWORD)
         
         self.tearDown()
         
-        
-        
-    def Glitched_User_Experience(self):
+    def test_glitched_User_Experience(self):
 
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
@@ -267,8 +266,7 @@ class CommerceTest(unittest.TestCase):
         self.driver.find_element(By.ID, "shopping_cart_container").click()
 
         cart_page_element = self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "cart_list")))
-        cart_item_name = self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text
-        self.assertEqual(cart_item_name, "Sauce Labs Backpack")
+        assert self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text == "Sauce Labs Backpack"
 
         self.driver.find_element(By.ID, "checkout").click()
         checkout_page_element = self.wait.until(EC.visibility_of_element_located((By.ID, "checkout_info_container")))
@@ -279,13 +277,13 @@ class CommerceTest(unittest.TestCase):
         self.driver.find_element(By.ID, "continue").click()
 
         checkout_item_name = self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text
-        self.assertEqual(checkout_item_name, "Sauce Labs Backpack")
+        assert checkout_item_name == "Sauce Labs Backpack"
 
         self.driver.find_element(By.ID, "finish").click()
         success_is_displayed = self.driver.find_element(By.ID, "checkout_complete_container").is_displayed()
-        self.assertTrue(success_is_displayed)
+        assert success_is_displayed
 
         self.tearDown()
 
-if __name__ == "__main__":
-    unittest.main()
+# if __name__ == "__main__":
+#     unittest.main()

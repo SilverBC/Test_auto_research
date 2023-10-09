@@ -80,7 +80,7 @@ npm test
 Assuming `requests` and `selenium` libraries are installed, run:
 
 ```
-python CommerceTest.py
+pytest ./CommerceTest.py
 ```
 
 ## Ruby

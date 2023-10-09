@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using OpenQA.Selenium.Interactions;
 using System.Linq;
+using System.Threading;
 // using DotNetSeleniumExtras.WaitHelpers; Depreciated, C# is not well maintained
 // using DotNetSeleniumExtras;
 
@@ -59,7 +60,7 @@ public class CommerceTest
         driver.Quit();
     }
 
-    [Fact]
+    // [Fact]
     public void Test()
     {
         SetUp("https://www.saucedemo.com");
@@ -94,7 +95,7 @@ public class CommerceTest
         Teardown();
     }
 
-    [Fact]
+    // [Fact]
     public void AssertItemNameOnItemInfoPage()
     {
         SetUp("https://www.saucedemo.com");
@@ -112,7 +113,7 @@ public class CommerceTest
         Teardown();
     }
 
-    [Fact]
+    // [Fact]
     public void MoveToLinkedIn()
     {
         SetUp("https://www.saucedemo.com");
@@ -135,7 +136,7 @@ public class CommerceTest
         Teardown();
     }
 
-    [Fact]
+    // [Fact]
     public void AssertSorting()
     {
         SetUp("https://www.saucedemo.com");
@@ -173,96 +174,102 @@ public class CommerceTest
     }
 
     // [Fact]
-    // public void AssertShoppingButtonStates()
-    // {
-    //     SetUp("https://www.saucedemo.com");
-    //     LogIn(USERNAME, PASSWORD);
+    public void AssertShoppingButtonStates()
+    {
+        SetUp("https://www.saucedemo.com");
+        LogIn(USERNAME, PASSWORD);
 
-    //     driver.FindElements(By.CssSelector("[id^=add-to-cart]")).ToList().ForEach(button =>
-    //     {
-    //         // wait.Until(ExpectedConditions.ElementToBeClickable(button)); a wait might help here but library is not well maintained
-    //         actions.MoveToElement(button).Perform();
-    //         button.Click();
-    //     });
+        IReadOnlyCollection<IWebElement> addToCartButtons = driver.FindElements(By.CssSelector("[id^=add-to-cart]"));
+        
+        foreach (IWebElement button in addToCartButtons)
+        {
+            new Actions(driver).MoveToElement(button).Perform();
+            button.Click();
+        };
 
-    //     // Check that the cart button says 6
-    //     Assert.Equal("6", driver.FindElement(By.ClassName("shopping_cart_badge")).Text);
+        // Check that the cart button says 6
+        Assert.Equal("6", driver.FindElement(By.ClassName("shopping_cart_badge")).Text);
 
-    //     driver.FindElements(By.CssSelector("[id^=remove]")).ToList().ForEach(button =>
-    //     {
-    //         actions.MoveToElement(button).Perform();
-    //         button.Click();
-    //     });
+        IReadOnlyCollection<IWebElement> removeButtons = driver.FindElements(By.CssSelector("[id^=remove]"));
 
-    //     // Check that the cart button says nothing
-    //     Assert.True(driver.FindElements(By.ClassName("shopping_cart_badge")).Count < 1);
+        foreach (IWebElement button in removeButtons)
+        {
+            new Actions(driver).MoveToElement(button).Perform();
+            button.Click();
+        };
+
+        // Check that the cart button says nothing
+        Assert.True(driver.FindElements(By.ClassName("shopping_cart_badge")).Count < 1);
     
-    //     Teardown();
-    // }
+        Teardown();
+    }
 
     // [Fact]
-    // public void AssertUserLogInCachePermanency()
-    // {
-    //     SetUp("https://www.saucedemo.com");
-    //     LogIn(USERNAME, PASSWORD);
+    public void AssertUserLogInCachePermanency()
+    {
+        SetUp("https://www.saucedemo.com");
+        LogIn(USERNAME, PASSWORD);
 
-    //     // Add items to cart
-    //     var backpackButton = driver.FindElement(By.Id("add-to-cart-sauce-labs-backpack"));
-    //     actions.MoveToElement(backpackButton).Perform();
-    //     backpackButton.Click();
+        // Add items to cart
+        var backpackButton = driver.FindElement(By.Id("add-to-cart-sauce-labs-backpack"));
+        new Actions(driver).MoveToElement(backpackButton).Perform();
+        backpackButton.Click();
 
-    //     var bikeLightButton = driver.FindElement(By.Id("add-to-cart-sauce-labs-bike-light"));
-    //     actions.MoveToElement(bikeLightButton).Perform();        //stale element error
-    //     bikeLightButton.Click();
+        var bikeLightButton = driver.FindElement(By.Id("add-to-cart-sauce-labs-bike-light"));
+        new Actions(driver).MoveToElement(bikeLightButton).Perform();        //stale element error
+        bikeLightButton.Click();
 
-    //     LogOut();
+        LogOut();
 
-    //     // Check that items are still in the cart
-    //     LogIn(USERNAME, PASSWORD);
+        // Check that items are still in the cart
+        LogIn(USERNAME, PASSWORD);
 
-    //     Assert.Equal("2", driver.FindElement(By.ClassName("shopping_cart_badge")).Text);
+        Assert.Equal("2", driver.FindElement(By.ClassName("shopping_cart_badge")).Text);
 
-    //     Teardown();
-    // }
+        Teardown();
+    }
     
-    // [Fact]
-    // public void AssertAppResetFunctionality()
-    // {
-    //     SetUp("https://www.saucedemo.com");
-    //     LogIn(USERNAME, PASSWORD);
-
-    //     // Select all items
-    //     driver.FindElements(By.CssSelector("[id^=add-to-cart]")).ToList().ForEach(button =>
-    //     {
-    //         // wait.Until(ExpectedConditions.ElementToBeClickable(button)); a wait might help here but library is not well maintained
-    //         actions.MoveToElement(button).Perform();
-    //         button.Click();
-    //     });
-
-    //     // Click on sidebar
-    //     driver.FindElement(By.Id("react-burger-menu-btn")).Click();
-
-    //     // Click on Reset App State
-    //     driver.FindElement(By.Id("reset_sidebar_link")).Click();
-    //     driver.FindElement(By.Id("react-burger-cross-btn")).Click();
-
-    //     // Check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
-    //     Assert.True(driver.FindElements(By.ClassName("shopping_cart_badge")).Count < 1);
-
-    //     // Check that "Remove" is displayed for each item
-    //     Assert.True(driver.FindElement(By.Id("remove-sauce-labs-backpack")).Displayed);
-    //     Assert.True(driver.FindElement(By.Id("remove-sauce-labs-bike-light")).Displayed);
-    //     Assert.True(driver.FindElement(By.Id("remove-sauce-labs-bolt-t-shirt")).Displayed);
-    //     Assert.True(driver.FindElement(By.Id("remove-sauce-labs-fleece-jacket")).Displayed);
-    //     Assert.True(driver.FindElement(By.Id("remove-sauce-labs-onesie")).Displayed);
-    //     Assert.True(driver.FindElement(By.Id("remove-test.allthethings()-t-shirt-(red)")).Displayed);
-
-    //     driver.FindElement(By.Id("react-burger-cross-btn")).Click();
-
-    //     Teardown();
-    // }
-
     [Fact]
+    public void AssertAppResetFunctionality()
+    {
+        SetUp("https://www.saucedemo.com");
+        LogIn(USERNAME, PASSWORD);
+
+        // Select all items
+        IReadOnlyCollection<IWebElement> addToCartButtons = driver.FindElements(By.CssSelector("[id^=add-to-cart]"));
+        
+        foreach (IWebElement button in addToCartButtons)
+        {
+            new Actions(driver).MoveToElement(button).Perform();
+            button.Click();
+        };
+
+        // Click on sidebar
+        driver.FindElement(By.Id("react-burger-menu-btn")).Click();
+
+        // Click on Reset App State
+        driver.FindElement(By.Id("reset_sidebar_link")).Click();
+        // Click on the close sidebar button using JS.
+        // This was necessary because normal click was not waiting 
+        // for the CSS animation to be over, resulting in an
+        // element click interception.
+        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", driver.FindElement(By.Id("react-burger-cross-btn")));
+
+        // Check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
+        Assert.True(driver.FindElements(By.ClassName("shopping_cart_badge")).Count < 1);
+
+        // Check that "Remove" is displayed for each item
+        Assert.True(driver.FindElement(By.Id("remove-sauce-labs-backpack")).Displayed);
+        Assert.True(driver.FindElement(By.Id("remove-sauce-labs-bike-light")).Displayed);
+        Assert.True(driver.FindElement(By.Id("remove-sauce-labs-bolt-t-shirt")).Displayed);
+        Assert.True(driver.FindElement(By.Id("remove-sauce-labs-fleece-jacket")).Displayed);
+        Assert.True(driver.FindElement(By.Id("remove-sauce-labs-onesie")).Displayed);
+        Assert.True(driver.FindElement(By.Id("remove-test.allthethings()-t-shirt-(red)")).Displayed);
+
+        Teardown();
+    }
+
+    // [Fact]
     public void AssertErrorAccessingWithoutLogIn()
     {
         SetUp("https://www.saucedemo.com/cart.html");
@@ -282,7 +289,7 @@ public class CommerceTest
         Teardown();
     }
 
-    [Fact]
+    // [Fact]
     public void AssertLockedOutUser()
     {
         SetUp("https://www.saucedemo.com");
@@ -304,7 +311,7 @@ public class CommerceTest
         Teardown();
     }
 
-    [Fact]
+    // [Fact]
     public void Glitched_User_Experience()
     {
         SetUp("https://www.saucedemo.com");

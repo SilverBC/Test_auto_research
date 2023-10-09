@@ -162,35 +162,37 @@ class CommerceTest < Test::Unit::TestCase
     assert_equal('2', @driver.find_element(class: 'shopping_cart_badge').text)
   end
 
-  # def test_assert_app_reset_functionality  # flaky test
-  #   setup_driver('https://www.saucedemo.com')
-  #   log_in(USERNAME, PASSWORD)
+  def test_assert_app_reset_functionality  # flaky test
+    setup_driver('https://www.saucedemo.com')
+    log_in(USERNAME, PASSWORD)
   
-  #   # Select all items
-  #   @driver.find_elements(css: "[id^=add-to-cart]").each do |button|
-  #     @actions.move_to(button).perform
-  #     button.click
-  #   end
+    # Select all items
+    @driver.find_elements(css: "[id^=add-to-cart]").each do |button|
+      @actions.move_to(button).perform
+      button.click
+    end
   
-  #   # Click on sidebar
-  #   @driver.find_element(id: 'react-burger-menu-btn').click
-  #   # Click on Reset App State
-  #   @driver.find_element(id: 'reset_sidebar_link').click
-  #   @driver.find_element(id: 'react-burger-cross-btn').click
+    # Click on sidebar
+    @driver.find_element(id: 'react-burger-menu-btn').click
+    # Click on Reset App State
+    @driver.find_element(id: 'reset_sidebar_link').click
+    # Click on the close sidebar button using JS.
+    # This was necessary because normal click was not waiting 
+    # for the CSS animation to be over, resulting in an
+    # element click interception.
+    @driver.execute_script("arguments[0].click();", @driver.find_element(id: 'react-burger-cross-btn'))
   
-  #   # Check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
-  #   assert_true(@driver.find_elements(class: 'shopping_cart_badge').size < 1)
+    # Check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
+    assert_true(@driver.find_elements(class: 'shopping_cart_badge').size < 1)
   
-  #   # Verify the visibility of 'remove' buttons
-  #   assert_true(@driver.find_element(id: 'remove-sauce-labs-backpack').displayed?)
-  #   assert_true(@driver.find_element(id: 'remove-sauce-labs-bike-light').displayed?)
-  #   assert_true(@driver.find_element(id: 'remove-sauce-labs-bolt-t-shirt').displayed?)
-  #   assert_true(@driver.find_element(id: 'remove-sauce-labs-fleece-jacket').displayed?)
-  #   assert_true(@driver.find_element(id: 'remove-sauce-labs-onesie').displayed?)
-  #   assert_true(@driver.find_element(id: 'remove-test.allthethings()-t-shirt-(red)').displayed?)
-
-  #   @driver.find_element(id: 'react-burger-cross-btn').click
-  # end
+    # Verify the visibility of 'remove' buttons
+    assert_true(@driver.find_element(id: 'remove-sauce-labs-backpack').displayed?)
+    assert_true(@driver.find_element(id: 'remove-sauce-labs-bike-light').displayed?)
+    assert_true(@driver.find_element(id: 'remove-sauce-labs-bolt-t-shirt').displayed?)
+    assert_true(@driver.find_element(id: 'remove-sauce-labs-fleece-jacket').displayed?)
+    assert_true(@driver.find_element(id: 'remove-sauce-labs-onesie').displayed?)
+    assert_true(@driver.find_element(id: 'remove-test.allthethings()-t-shirt-(red)').displayed?)
+  end
   
   def test_assert_error_accessing_without_log_in
     setup_driver('https://www.saucedemo.com/cart.html')  # write the direct link here

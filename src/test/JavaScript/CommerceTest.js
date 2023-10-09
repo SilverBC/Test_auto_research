@@ -212,35 +212,37 @@ describe('CommerceTest', function() {
         await driver.quit();
     });
 
-    // it('Assert App Reset Functionality', async function() {   //flaky test
-    //     await setUp('https://www.saucedemo.com');
-    //     await logIn(USERNAME, PASSWORD);
+    it('Assert App Reset Functionality', async function() {   //flaky test
+        await setUp('https://www.saucedemo.com');
+        await logIn(USERNAME, PASSWORD);
 
-    //     const addButtons = await driver.findElements(By.css("[id^=add-to-cart]"));
-    //     for(let button of addButtons) {
-    //         await driver.actions().move({origin: button}).perform();
-    //         await button.click();
-    //     }
+        const addButtons = await driver.findElements(By.css("[id^=add-to-cart]"));
+        for(let button of addButtons) {
+            await driver.actions().move({origin: button}).perform();
+            await button.click();
+        }
 
-    //     await driver.findElement(By.id('react-burger-menu-btn')).click();
-    //     await driver.findElement(By.id('reset_sidebar_link')).click();
-    //     await driver.findElement(By.id('react-burger-cross-btn')).click();
+        await driver.findElement(By.id('react-burger-menu-btn')).click();
+        await driver.findElement(By.id('reset_sidebar_link')).click();
+        // Click on the close sidebar button using JS.
+        // This was necessary because normal click was not waiting 
+        // for the CSS animation to be over, resulting in an
+        // element click interception.
+        await driver.executeScript("arguments[0].click()", driver.findElement(By.id('react-burger-cross-btn')));
 
-    //     const cartBadges = await driver.findElements(By.className('shopping_cart_badge'));
-    //     assert(cartBadges.length < 1);
+        const cartBadges = await driver.findElements(By.className('shopping_cart_badge'));
+        assert(cartBadges.length < 1);
 
-    //     assert(await driver.findElement(By.id('remove-sauce-labs-backpack')).isDisplayed());
-    //     assert(await driver.findElement(By.id('remove-sauce-labs-bike-light')).isDisplayed());
-    //     assert(await driver.findElement(By.id('remove-sauce-labs-bolt-t-shirt')).isDisplayed());
-    //     assert(await driver.findElement(By.id('remove-sauce-labs-fleece-jacket')).isDisplayed());
-    //     assert(await driver.findElement(By.id('remove-sauce-labs-onesie')).isDisplayed());
-    //     assert(await driver.findElement(By.id('remove-test.allthethings()-t-shirt-(red)')).isDisplayed());
+        assert(await driver.findElement(By.id('remove-sauce-labs-backpack')).isDisplayed());
+        assert(await driver.findElement(By.id('remove-sauce-labs-bike-light')).isDisplayed());
+        assert(await driver.findElement(By.id('remove-sauce-labs-bolt-t-shirt')).isDisplayed());
+        assert(await driver.findElement(By.id('remove-sauce-labs-fleece-jacket')).isDisplayed());
+        assert(await driver.findElement(By.id('remove-sauce-labs-onesie')).isDisplayed());
+        assert(await driver.findElement(By.id('remove-test.allthethings()-t-shirt-(red)')).isDisplayed());
 
-    //     await driver.findElement(By.id('react-burger-cross-btn')).click();
-    
-	// 	   await logOut();
-    //     await driver.quit();
-	// });
+        await logOut();
+        await driver.quit();
+	});
 
 	it('Assert Error Accessing Without Log In', async function() {
         await setUp('https://www.saucedemo.com/cart.html');  // Direct link
