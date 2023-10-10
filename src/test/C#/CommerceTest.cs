@@ -7,9 +7,6 @@ using System.Collections.Generic;
 using OpenQA.Selenium.Interactions;
 using System.Linq;
 using System.Threading;
-// using DotNetSeleniumExtras.WaitHelpers; Depreciated, C# is not well maintained
-// using DotNetSeleniumExtras;
-
 
 public class CommerceTest
 {
@@ -60,7 +57,7 @@ public class CommerceTest
         driver.Quit();
     }
 
-    // [Fact]
+    [Fact]
     public void Test()
     {
         SetUp("https://www.saucedemo.com");
@@ -95,7 +92,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void AssertItemNameOnItemInfoPage()
     {
         SetUp("https://www.saucedemo.com");
@@ -113,7 +110,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void MoveToLinkedIn()
     {
         SetUp("https://www.saucedemo.com");
@@ -136,7 +133,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void AssertSorting()
     {
         SetUp("https://www.saucedemo.com");
@@ -173,7 +170,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void AssertShoppingButtonStates()
     {
         SetUp("https://www.saucedemo.com");
@@ -204,7 +201,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void AssertUserLogInCachePermanency()
     {
         SetUp("https://www.saucedemo.com");
@@ -269,7 +266,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void AssertErrorAccessingWithoutLogIn()
     {
         SetUp("https://www.saucedemo.com/cart.html");
@@ -289,7 +286,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void AssertLockedOutUser()
     {
         SetUp("https://www.saucedemo.com");
@@ -311,7 +308,7 @@ public class CommerceTest
         Teardown();
     }
 
-    // [Fact]
+    [Fact]
     public void Glitched_User_Experience()
     {
         SetUp("https://www.saucedemo.com");
