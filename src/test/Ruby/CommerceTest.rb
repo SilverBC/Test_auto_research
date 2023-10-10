@@ -71,6 +71,20 @@ class CommerceTest < Test::Unit::TestCase
     assert_true(success_is_displayed)
   end
 
+  def test_assert_item_name_on_item_info_page
+    setup_driver('https://www.saucedemo.com')
+    log_in(USERNAME, PASSWORD)
+
+    # go to the item
+    @driver.find_element(id: 'item_4_title_link').click
+
+    # check that texts exist on the site
+    assert_equal(@driver.find_element(class: 'inventory_details_name').text, "Sauce Labs Backpack")
+    expected = "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection."
+    assert_equal(@driver.find_element(class: 'inventory_details_desc').text, expected)
+
+  end
+
   def test_move_to_linkedin
     setup_driver('https://www.saucedemo.com')
     log_in(USERNAME, PASSWORD)
@@ -230,7 +244,7 @@ class CommerceTest < Test::Unit::TestCase
     log_in(USERNAME, PASSWORD)
   end
 
-  def glitched_user_experience
+  def test_glitched_user_experience
     setup_driver('https://www.saucedemo.com')
     log_in(GLITCHUSERNAME, PASSWORD)
 
