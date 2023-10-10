@@ -9,7 +9,7 @@ class CommerceTest < Test::Unit::TestCase
 
   def setup_driver(url)
     options = Selenium::WebDriver::Chrome::Options.new
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
     @driver = Selenium::WebDriver.for :chrome, options: options
     @driver.manage.timeouts.implicit_wait = 4 # seconds
     @driver.manage.window.resize_to(1920, 1080)

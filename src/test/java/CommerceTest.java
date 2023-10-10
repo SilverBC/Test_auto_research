@@ -23,16 +23,16 @@ public class CommerceTest {
     final String USERNAME = "standard_user";
     final String LOCKEDUSERNAME = "locked_out_user";
     final String GLITCHUSERNAME = "performance_glitch_user";
-	final String PASSWORD = "secret_sauce";
+    final String PASSWORD = "secret_sauce";
 
     private WebDriver driver;
     private Wait<WebDriver> wait;
     private Actions actions;
 
     public void setUp(String url) {
-	    Dimension dimension = new Dimension(1920, 1080);
+	Dimension dimension = new Dimension(1920, 1080);
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--headless=new");
+        options.addArguments("--headless=new");
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
         driver.manage().window().setSize(dimension);
@@ -76,12 +76,12 @@ public class CommerceTest {
         WebElement cartPageElement = driver.findElement(By.className("cart_list"));
         wait.until(d -> cartPageElement.isDisplayed());
 
-	    String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
-	    assertEquals(cartItemName, "Sauce Labs Backpack");
+	String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
+	assertEquals(cartItemName, "Sauce Labs Backpack");
 
-	    driver.findElement(By.id("checkout")).click();
-	    WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
-	    wait.until(d -> checkoutPageElement.isDisplayed());
+	driver.findElement(By.id("checkout")).click();
+	WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
+	wait.until(d -> checkoutPageElement.isDisplayed());
 
         driver.findElement(By.id("first-name")).sendKeys("John");
         driver.findElement(By.id("last-name")).sendKeys("Doe");
@@ -173,17 +173,17 @@ public class CommerceTest {
         logIn(USERNAME, PASSWORD);
 
         driver.findElements(By.cssSelector("[id^=add-to-cart]")).forEach(button -> {
-            actions.moveToElement(button).perform();
-            button.click();
-        });
+		actions.moveToElement(button).perform();
+		button.click();
+	    });
 
         //check that the cart button says 6
         assertEquals("6", driver.findElement(By.className("shopping_cart_badge")).getText());
 
         driver.findElements(By.cssSelector("[id^=remove]")).forEach(button -> {
-            actions.moveToElement(button).perform();
-            button.click();
-        }); 
+		actions.moveToElement(button).perform();
+		button.click();
+	    }); 
        
         //check that the cart button says nothing
         assertTrue(driver.findElements(By.className("shopping_cart_badge")).size() < 1);
@@ -213,9 +213,9 @@ public class CommerceTest {
 
         //select all items
         driver.findElements(By.cssSelector("[id^=add-to-cart]")).forEach(button -> {
-            actions.moveToElement(button).perform();
-            button.click();
-        });
+		actions.moveToElement(button).perform();
+		button.click();
+	    });
 
         //click on sidebar
         driver.findElement(By.id("react-burger-menu-btn")).click();
@@ -284,12 +284,12 @@ public class CommerceTest {
         WebElement cartPageElement = driver.findElement(By.className("cart_list"));
         wait.until(d -> cartPageElement.isDisplayed());
 
-	    String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
-	    assertEquals(cartItemName, "Sauce Labs Backpack");
+	String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
+	assertEquals(cartItemName, "Sauce Labs Backpack");
 
-	    driver.findElement(By.id("checkout")).click();
-	    WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
-	    wait.until(d -> checkoutPageElement.isDisplayed());
+	driver.findElement(By.id("checkout")).click();
+	WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
+	wait.until(d -> checkoutPageElement.isDisplayed());
 
         driver.findElement(By.id("first-name")).sendKeys("John");
         driver.findElement(By.id("last-name")).sendKeys("Doe");

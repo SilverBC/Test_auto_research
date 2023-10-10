@@ -22,7 +22,7 @@ public class CommerceTest
     public void SetUp(string url)
     {
         ChromeOptions options = new ChromeOptions();
-        // options.AddArguments("--headless"); // Uncomment if you want to run headless
+        options.AddArguments("--headless=new"); // Uncomment if you want to run headless
         driver = new ChromeDriver(options);
         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(4);
         driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);

@@ -20,7 +20,7 @@ class TestCommerce():
     def set_up(self, url):
         dimension = (1920, 1080)
         options = webdriver.ChromeOptions()
-        # options.add_argument("--headless=new")
+        options.add_argument("--headless=new")
         self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(4)  # seconds
         self.driver.set_window_size(*dimension)
