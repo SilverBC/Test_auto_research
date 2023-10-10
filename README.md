@@ -77,7 +77,13 @@ npm test
 
 ## Python
 
-Assuming `requests` and `selenium` libraries are installed, run:
+Install the dependencies via:
+
+```
+pipenv install
+```
+
+Afterwards, run the test with:
 
 ```
 pytest ./CommerceTest.py
@@ -87,7 +93,13 @@ pytest ./CommerceTest.py
 
 Run:
 
-Assuming the `selenium-webdriver` and `test-unit` gems are installed, run:
+Install all dependencies via:
+
+```
+bundle install
+```
+
+Afterwards, run the test with:
 
 ```
 ruby CommerceTest.rb
