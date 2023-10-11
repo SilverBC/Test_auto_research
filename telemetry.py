@@ -1,3 +1,4 @@
+import csv
 import psutil
 import time
 import subprocess
@@ -11,7 +12,9 @@ import shlex
 # value should not be below 0.1
 INTERVAL=1.0
 
-# This dictionary is used to look up which script to run for which language
+# This dictionary is used to look up which script to run for which
+# language.  shlex is used as a convenicence to split up the commands
+# the way subprocess.Popen expects them.
 launch_scripts = {
     "java": shlex.split("mvn -B test"),
     "java_comp": shlex.split("mvn -B clean test"),
@@ -22,11 +25,11 @@ launch_scripts = {
     "ruby": shlex.split("ruby src/test/Ruby/CommerceTest.rb")
 }
 
+perf_data = []
+
 # This function runs in a separate thread in order to monitor the
 # overall CPU and memory usage.
 def monitor(pid):
-    perf_data = []
-
     while psutil.pid_exists(pid):
         cpu_percent = psutil.cpu_percent(interval=INTERVAL)
         sw_mem_info = psutil.swap_memory()
@@ -39,47 +42,60 @@ def monitor(pid):
             'timestamp': int(time.time())
         })
 
-    print(json.dumps(perf_data))
+# We get the language to run from the environment varables. This
+# makes configuration from the pipeline side trivially easy.
+target_language = os.environ["TARGET_LANGUAGE"]
+launch_script = launch_scripts[target_language]
 
-def run():
-    # We get the language to run from the environment varables. This
-    # makes configuration from the pipeline side trivially easy.
-    target_language = os.environ["TARGET_LANGUAGE"]
-    launch_script = launch_scripts[target_language]
+# This is necessary, because dotnet CLI does not seem to have an
+# option to forcefully recompile the code, so I am deleting the
+# bin and obj folders by hand.
+if target_language == "c_sharp_comp":
+    subprocess.run("rm -r src/test/C\\#/bin && rm -r src/test/C\\#/obj", shell=True)
 
-    # This is necessary, because dotnet CLI does not seem to have an
-    # option to forcefully recompile the code, so I am deleting the
-    # bin and obj folders by hand.
-    if target_language == "c_sharp_comp":
-       subprocess.run("rm -r src/test/C\\#/bin && rm -r src/test/C\\#/obj", shell=True)
+start_time = time.time()
 
-    # Start the process of the test and store its PID. We will then
-    # pass this PID to the monitor function defined above so that we
-    # only run the monitoring while the process is active.
-    external_process = subprocess.Popen(launch_script, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    pid = external_process.pid
-    print(pid)
+# Start the process of the test and store its PID. We will then pass
+# this PID to the monitor function defined above so that we only run
+# the monitoring while the process is active. subprocess.Popen is used
+# because we don't want to wait for the process to finish, like it is
+# with run().
+external_process = subprocess.Popen(launch_script, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+pid = external_process.pid
+print(pid)
 
-    # Start the monitoring function in another thread
-    monitor_thread = threading.Thread(target=monitor, args=[pid])
-    monitor_thread.start()
-    stdout, stderr = external_process.communicate()
+# Start the monitoring function in another thread
+monitor_thread = threading.Thread(target=monitor, args=[pid])
+monitor_thread.start()
+stdout, stderr = external_process.communicate()
 
-    # Order the main thread to wait for the test launch process to
-    # finish.
-    external_process.wait()
-    external_process.terminate()
+# Order the main thread to wait for the test launch process to
+# finish.
+external_process.wait()
+external_process.terminate()
 
-    # Join the forked thread.
-    monitor_thread.join()
+# Join the forked thread.
+monitor_thread.join()
 
-    # Print out the process's stdout so we can see how the test run
-    # went.
-    print(stdout)
+end_time = time.time()
 
-    # Print out the process's stderr if there is anything in there.
-    if stderr:
-        print(stderr)
+script_elapsed_time = end_time - start_time
 
-if __name__ == "__main__":
-    run()
+end_timestamp = time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime(end_time))
+
+with open(f"{target_language}-tr-{end_timestamp}.csv", "w", newline = "") as csv_file:
+    fieldnames = perf_data[0].keys()
+    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+    writer.writeheader()
+    for row in perf_data:
+        writer.writerow(row)
+
+print(f"TIME ELAPSED: {script_elapsed_time:.2f} seconds")
+
+# Print out the process's stdout so we can see how the test run
+# went.
+print(stdout)
+
+# Print out the process's stderr if there is anything in there.
+if stderr:
+    print(stderr)

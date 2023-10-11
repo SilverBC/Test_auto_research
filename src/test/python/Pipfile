@@ -7,7 +7,7 @@ name = "pypi"
 requests = "*"
 selenium = "*"
 pytest = "7.4.2"
-
+pipfile = "*"
 
 [dev-packages]
 

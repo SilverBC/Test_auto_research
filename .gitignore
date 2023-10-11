@@ -54,5 +54,8 @@ src/test/C#/[Oo]ut/
 src/test/C#/msbuild.log
 src/test/C#/msbuild.err
 src/test/C#/msbuild.wrn
+src/test/C#/TestResults/
 
 src/test/python/__pycache__
+
+/*.csv
