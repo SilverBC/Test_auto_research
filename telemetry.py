@@ -142,15 +142,15 @@ stdout, stderr = external_process.communicate()
 external_process.wait()
 external_process.terminate()
 
-# If the process exited with an error code, warn the user about it.
-if external_process.returncode != 0:
-    print("WARNING: there was an error in the test launch!")
-
 # Join the forked thread.
 monitor_thread.join()
 
 # Stop measuring the time just after the subprocess is over.
 end_time = time.time()
+
+# If the process exited with an error code, warn the user about it.
+if external_process.returncode != 0:
+    print("WARNING: there was an error in the test launch!")
 
 script_elapsed_time = end_time - start_time
 script_elapsed_time_ms = int(script_elapsed_time * 1000)
@@ -161,6 +161,10 @@ end_timestamp = time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime(end_time))
 # Print out the process's stdout so we can see how the test run
 # went.
 print(stdout)
+
+# Print out the process's stderr if there is anything in there.
+if stderr:
+    print(stderr)
 
 # Write the performance measurements in a CSV file. 
 with open(f"{target_language}-tr-{end_timestamp}.csv", "w", newline = "") as csv_file:
@@ -182,7 +186,3 @@ with open(f"{target_language}-et-{end_timestamp}.csv", "w", newline = "") as csv
     writer.writeheader()
     writer.writerow({"script_measured_time": script_elapsed_time_ms,
                      "launcher_parsed_time": parsed_exec_time})
-
-# Print out the process's stderr if there is anything in there.
-if stderr:
-    print(stderr)
