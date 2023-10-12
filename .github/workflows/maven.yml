@@ -39,11 +39,13 @@ jobs:
           node-version: 18.18.1
       - name: Download npm dependencies
         run: |
-          cd src/test/JavaScript; npm install
+          cd src/test/JavaScript; npm install; cd -
+      - name: Install pipenv
+        run: |
+          sudo apt-get install -y pipenv
       - name: Download python dependencies
-        uses: VaultVulp/action-pipenv@v2.0.1
-        with:
-          command: install -d
+        run: |
+          pipenv install -d
       - name: Set up ruby
         uses: ruby/setup-ruby@v1
         with:
