@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.parser import isoparse
 import csv
 import decimal
 import os
@@ -73,8 +74,8 @@ def parse_test_run_xml():
         start_time_str = times_node.get("start")
         end_time_str = times_node.get("finish")
         if start_time_str and end_time_str:
-            start_time = datetime.fromisoformat(start_time_str)
-            end_time = datetime.fromisoformat(end_time_str)
+            start_time = isoparse(start_time_str)
+            end_time = isoparse(end_time_str)
             duration_ms = int(
                 (end_time - start_time).total_seconds() * 1000
             )
