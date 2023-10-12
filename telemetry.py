@@ -1,12 +1,14 @@
+from datetime import datetime
 import csv
 import decimal
-import psutil
-import time
-import subprocess
-import threading
 import os
+import psutil
 import re
 import shlex
+import subprocess
+import threading
+import time
+import xml.etree.ElementTree as ET
 
 # This is how often the CPU/memory measurements are made in
 # seconds. It's recommended as per psutil's documentation that this
@@ -43,53 +45,67 @@ def monitor(pid):
             'timestamp': int(time.time())
         })
 
-def parse_test_execution_time(language, stdout_text):
-    result = 0
+def parse_seconds_via_regexp(regexp, input_str):
+    pattern = re.compile(regexp)
+    matches = re.search(pattern, input_str)
+    if matches:
+        extracted_text = matches.group(1)
+        ex_ms = decimal.Decimal(extracted_text) * 1000
+        return int(ex_ms)
+    else:
+        return -1
 
-    # TODO: extract java, python and ruby logic into a separate function
+def parse_ms_via_regexp(regexp, input_str):
+    pattern = re.compile(regexp)
+    matches = re.findall(pattern, input_str)
+    if matches:
+        ms_list = [int(item) for item in matches]
+        return sum(ms_list)
+    else:
+        return -1
+
+def parse_test_run_xml():
+    xml_tree = ET.parse("src/test/C#/TestResults/testResults.trx")
+    # For some bizarre reason, this expression works instead of
+    # "./TestRun/Times".
+    times_node = xml_tree.find("./")
+    if times_node is not None:
+        start_time_str = times_node.get("start")
+        end_time_str = times_node.get("finish")
+        if start_time_str and end_time_str:
+            start_time = datetime.fromisoformat(start_time_str)
+            end_time = datetime.fromisoformat(end_time_str)
+            duration_ms = int(
+                (end_time - start_time).total_seconds() * 1000
+            )
+            return duration_ms
+    else:
+        print(f"WARNING: could not parse testResults.trx file!")
+        return -1
+
+def parse_test_execution_time(language, stdout_text):
+    result = -1
 
     if language == "java" or language == "java_comp":
-        # Need to match `[INFO] Total time:  37.212 s`
-        pattern = re.compile(r"Total time:\s+(\d+\.\d+) s")
-        matches = re.search(pattern, stdout_text)
-        if matches:
-            extracted_text = matches.group(1)
-            ex_ms = decimal.Decimal(extracted_text) * 1000
-            result = int(ex_ms)
-        else:
-            print(f"WARNING: There was an issue with parsing the output of {language} test")
+        parse_result = parse_seconds_via_regexp(r"Total time:\s+(\d+\.\d+) s", stdout_text)
+        result = parse_result
     elif language == "c_sharp" or language == "c_sharp_comp":
-        # TODO: implement this
-        result = 0
+        parse_result = parse_test_run_xml()
+        result = parse_result
     elif language == "js":
-        # Not using decimal because the results are given in ms anyway
-        pattern = re.compile(r"\((\d+)ms\)")
-        matches = re.findall(pattern, stdout_text)
-        if matches:
-            ms_list = [int(item) for item in matches]
-            result = sum(ms_list)
-        else:
-            print(f"WARNING: There was an issue with parsing the output of {language} test")
+        parse_result = parse_ms_via_regexp(r"\((\d+)ms\)", stdout_text)
+        result = parse_result
     elif language == "python":
-        pattern = re.compile(r"\d+ passed in (\d+\.\d+)s")
-        matches = re.search(pattern, stdout_text)
-        if matches:
-            extracted_text = matches.group(1)
-            ex_ms = decimal.Decimal(extracted_text) * 1000
-            result = int(ex_ms)
-        else:
-            print(f"WARNING: There was an issue with parsing the output of {language} test")
+        parse_result = parse_seconds_via_regexp(r"\d+ passed in (\d+\.\d+)s", stdout_text)
+        result = parse_result
     elif language == "ruby":
-        pattern = re.compile(r"Finished in (\d+\.\d+) seconds\.")
-        matches = re.search(pattern, stdout_text)
-        if matches:
-            extracted_text = matches.group(1)
-            ex_ms = decimal.Decimal(extracted_text) * 1000
-            result = int(ex_ms)
-        else:
-            print(f"WARNING: There was an issue with parsing the output of {language} test")
+        parse_result = parse_seconds_via_regexp(r"Finished in (\d+\.\d+) seconds\.", stdout_text)
+        result = parse_result
     else:
         raise ValueError("Incorrect language specified!")
+
+    if result == -1:
+        print(f"WARNING: There was an issue with parsing the output of {language} test")
 
     return result
 
@@ -104,6 +120,8 @@ launch_script = launch_scripts[target_language]
 if target_language == "c_sharp_comp":
     subprocess.run("rm -r src/test/C\\#/bin && rm -r src/test/C\\#/obj", shell=True)
 
+# Start measuring the start time just before the subprocess is
+# launched
 start_time = time.time()
 
 # Start the process of the test and store its PID. We will then pass
@@ -128,15 +146,18 @@ external_process.terminate()
 # Join the forked thread.
 monitor_thread.join()
 
+# Stop measuring the time just after the subprocess is over.
 end_time = time.time()
 
 script_elapsed_time = end_time - start_time
 script_elapsed_time_ms = int(script_elapsed_time * 1000)
 
+# Format the end timestamp.
 end_timestamp = time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime(end_time))
 
 print(f"LAUNCH SCRIPT MEASURED TIME: {script_elapsed_time:.2f} seconds")
 
+# Write the performance measurements in a CSV file. 
 with open(f"{target_language}-tr-{end_timestamp}.csv", "w", newline = "") as csv_file:
     fieldnames = perf_data[0].keys()
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -148,12 +169,13 @@ parsed_exec_time = parse_test_execution_time(target_language, stdout)
 
 print(f"PARSED TIME: {parsed_exec_time} ms")
 
-# with open(f"{target_language}-et-{end_timestamp}.csv", "w", newline = "") as csv_file:
-#     fieldnames = ["script_measured_time", "launcher_parsed_time"]
-#     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-#     writer.writeheader()
-#     writer.writerow({"script_measured_time": round(script_elapsed_time * 1000),
-#                      "launcher_parsed_time": parsed_exec_time})
+# Write the execution times in a a CSV file.
+with open(f"{target_language}-et-{end_timestamp}.csv", "w", newline = "") as csv_file:
+    fieldnames = ["script_measured_time", "launcher_parsed_time"]
+    writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerow({"script_measured_time": script_elapsed_time_ms,
+                     "launcher_parsed_time": parsed_exec_time})
 
 # Print out the process's stdout so we can see how the test run
 # went.
