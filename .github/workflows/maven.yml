@@ -40,12 +40,16 @@ jobs:
       - name: Download npm dependencies
         run: |
           cd src/test/JavaScript; npm install; cd -
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
       - name: Install pipenv
         run: |
           sudo apt-get install -y pipenv
       - name: Download python dependencies
         run: |
-          pipenv install -d
+          pipenv install
       - name: Set up ruby
         uses: ruby/setup-ruby@v1
         with:
