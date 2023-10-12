@@ -65,7 +65,7 @@ def parse_ms_via_regexp(regexp, input_str):
         return -1
 
 def parse_test_run_xml():
-    xml_tree = ET.parse("src/test/C#/TestResults/testResults.trx")
+    xml_tree = ET.parse("src/test/C\\#/TestResults/testResults.trx")
     # For some bizarre reason, this expression works instead of
     # "./TestRun/Times".
     times_node = xml_tree.find("./")
