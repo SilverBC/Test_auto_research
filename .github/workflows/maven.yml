@@ -46,7 +46,7 @@ jobs:
           python-version: '3.10' 
       - name: Install pipenv
         run: |
-          sudo apt-get install -y pipenv
+          pip3 install --user pipenv
       - name: Download python dependencies
         run: |
           pipenv install
