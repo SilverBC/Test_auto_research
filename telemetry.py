@@ -186,3 +186,5 @@ with open(f"{target_language}-et-{end_timestamp}.csv", "w", newline = "") as csv
     writer.writeheader()
     writer.writerow({"script_measured_time": script_elapsed_time_ms,
                      "launcher_parsed_time": parsed_exec_time})
+
+exit(0)
