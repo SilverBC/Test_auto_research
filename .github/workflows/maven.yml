@@ -58,7 +58,17 @@ jobs:
         run: |
           cd src/test/Ruby; bundle install
       # Launch the tests
+      # TODO: use a build matrix to parametrize runs across all five languages
       - name: Launch Java Test
         run: pipenv run python telemetry.py
         env:
           TARGET_LANGUAGE: java
+      - name: Upload test result artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-run
+          path: |
+            *.csv
+      - name: Clean up; delete already uploaded csv files
+        run: |
+          rm *.csv
