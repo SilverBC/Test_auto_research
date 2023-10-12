@@ -21,8 +21,8 @@ INTERVAL=1.0
 launch_scripts = {
     "java": shlex.split("mvn -B test"),
     "java_comp": shlex.split("mvn -B clean test"),
-    "c_sharp": shlex.split("dotnet test src/test/C\\#/packages.csproj"),
-    "c_sharp_comp": shlex.split("dotnet test src/test/C\\#/packages.csproj"),
+    "c_sharp": shlex.split("dotnet test --logger \"trx;LogFileName=testResults.trx\" src/test/C\\#/packages.csproj"),
+    "c_sharp_comp": shlex.split("dotnet test --logger \"trx;LogFileName=testResults.trx\" src/test/C\\#/packages.csproj"),
     "js": shlex.split("npm --prefix src/test/JavaScript test"),
     "python": shlex.split("pipenv run pytest src/test/python/CommerceTest.py"),
     "ruby": shlex.split("ruby src/test/Ruby/CommerceTest.rb")
