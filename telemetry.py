@@ -131,7 +131,6 @@ start_time = time.time()
 # with run().
 external_process = subprocess.Popen(launch_script, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 pid = external_process.pid
-print(pid)
 
 # Start the monitoring function in another thread
 monitor_thread = threading.Thread(target=monitor, args=[pid])
@@ -142,6 +141,10 @@ stdout, stderr = external_process.communicate()
 # finish.
 external_process.wait()
 external_process.terminate()
+
+# If the process exited with an error code, warn the user about it.
+if external_process.returncode != 0:
+    print("WARNING: there was an error in the test launch!")
 
 # Join the forked thread.
 monitor_thread.join()
@@ -155,7 +158,9 @@ script_elapsed_time_ms = int(script_elapsed_time * 1000)
 # Format the end timestamp.
 end_timestamp = time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime(end_time))
 
-print(f"LAUNCH SCRIPT MEASURED TIME: {script_elapsed_time:.2f} seconds")
+# Print out the process's stdout so we can see how the test run
+# went.
+print(stdout)
 
 # Write the performance measurements in a CSV file. 
 with open(f"{target_language}-tr-{end_timestamp}.csv", "w", newline = "") as csv_file:
@@ -167,6 +172,7 @@ with open(f"{target_language}-tr-{end_timestamp}.csv", "w", newline = "") as csv
 
 parsed_exec_time = parse_test_execution_time(target_language, stdout)
 
+print(f"LAUNCH SCRIPT MEASURED TIME: {script_elapsed_time:.2f} seconds")
 print(f"PARSED TIME: {parsed_exec_time} ms")
 
 # Write the execution times in a a CSV file.
@@ -176,10 +182,6 @@ with open(f"{target_language}-et-{end_timestamp}.csv", "w", newline = "") as csv
     writer.writeheader()
     writer.writerow({"script_measured_time": script_elapsed_time_ms,
                      "launcher_parsed_time": parsed_exec_time})
-
-# Print out the process's stdout so we can see how the test run
-# went.
-print(stdout)
 
 # Print out the process's stderr if there is anything in there.
 if stderr:
