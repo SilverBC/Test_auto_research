@@ -30,11 +30,29 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-      # Workflow telemetry
-      - name: Collect Workflow Telemetry
-        uses: runforesight/workflow-telemetry-action@v1
+      - name: Set up .NET core
+        run: |
+          sudo apt-get install -y dotnet-sdk-7.0
+      - name: Set up node.js
+        uses: actions/setup-node@v3
         with:
-          metric_frequency: 1
+          node-version: 18.18.1
+      - name: Download npm dependencies
+        run: |
+          cd src/test/JavaScript; npm install
+      - name: Download python dependencies
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: install -d
+      - name: Set up ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Download ruby dependencies
+        run: |
+          cd src/test/Ruby; bundle install
       # Launch the tests
-      - name: Launch Test
-        run: mvn clean test
+      - name: Launch Java Test
+        run: python telemetry.py
+        env:
+          TARGET_LANGUAGE: java
