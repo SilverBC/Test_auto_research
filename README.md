@@ -86,7 +86,7 @@ pipenv install
 Afterwards, run the test with:
 
 ```
-pytest ./CommerceTest.py
+pipenv run pytest ./CommerceTest.py
 ```
 
 ## Ruby

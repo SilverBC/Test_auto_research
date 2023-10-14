@@ -17,24 +17,70 @@ on:
 jobs:
   run_tests:
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        language: [java, java_comp, c_sharp, c_sharp_comp, js, python, ruby]
     steps:
       - uses: actions/checkout@v3
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
       - uses: actions/setup-java@v3
+        if: ${{ matrix.language == 'java' || matrix.language == 'java_comp' }}
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
       - name: Install Maven
+        if: ${{ matrix.language == 'java' || matrix.language == 'java_comp' }}
         run: sudo apt-get install -y maven
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-      # Workflow telemetry
-      - name: Collect Workflow Telemetry
-        uses: runforesight/workflow-telemetry-action@v1
+      - name: Set up .NET core
+        if: ${{ matrix.language == 'c_sharp' || matrix.language == 'c_sharp_comp' }}
+        uses: actions/setup-dotnet@v3.2.0
         with:
-          metric_frequency: 1
+          dotnet-version: 7.0
+          dotnet-quality: ga
+      - name: Set up node.js
+        if: ${{ matrix.language == 'js' }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.18.1
+      - name: Download npm dependencies
+        if: ${{ matrix.language == 'js' }}
+        run: |
+          cd src/test/JavaScript; npm install; cd -
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - name: Install pipenv
+        run: |
+          pip3 install --user pipenv
+      - name: Download python dependencies
+        run: |
+          pipenv install
+      - name: Set up ruby
+        if: ${{ matrix.language == 'ruby' }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Download ruby dependencies
+        if: ${{ matrix.language == 'ruby' }}
+        run: |
+          cd src/test/Ruby; bundle install
       # Launch the tests
-      - name: Launch Test
-        run: mvn clean test
+      - name: Launch ${{ matrix.language }} Test
+        run: pipenv run python telemetry.py
+        env:
+          TARGET_LANGUAGE: ${{ matrix.language }}
+      - name: Upload test result artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-run
+          path: |
+            *.csv
+      - name: Clean up; delete already uploaded csv files
+        run: |
+          rm *.csv
