@@ -9,10 +9,13 @@
 name: Java CI with Maven
 
 on:
-  push:
-    branches: [ "master" ]
+  # push:
+  #   branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    # This schedule follows the California time (PDT [UTC-7])
+    - cron: '*/10 01,07,13,19 * * *'
 
 jobs:
   run_tests:
@@ -78,7 +81,7 @@ jobs:
       - name: Upload test result artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: test-run
+          name: real-test-run
           path: |
             *.csv
       - name: Clean up; delete already uploaded csv files
