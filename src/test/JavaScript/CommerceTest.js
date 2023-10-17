@@ -100,6 +100,8 @@ describe('CommerceTest', function() {
 	
         //Check that texts exist on the site 
         // Sauce Labs Backpack
+
+	// TODO: bring this in and see if it works
 	const itemName = await driver.findElement(By.className('inventory_details_name')).getText();
 	assert.strictEqual(itemName, 'Sauce Labs Backpack');
 	

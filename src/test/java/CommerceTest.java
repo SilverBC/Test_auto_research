@@ -287,32 +287,46 @@ public class CommerceTest {
     @Test
     public void Glitched_User_Experience(){
         setUp("https://www.saucedemo.com");
+
+        //jump in with the Glitched user
         logIn(GLITCHUSERNAME, PASSWORD);
 
-        //jump in with the Glitched user 
+	// Click "Add to cart" for the backpack item
         driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+
+	// Click on the cart icon
         driver.findElement(By.id("shopping_cart_container")).click();
 
+	// Explicit wait until the page is loaded.
         WebElement cartPageElement = driver.findElement(By.className("cart_list"));
         wait.until(d -> cartPageElement.isDisplayed());
 
+	// Assert that the item name is correctly displayed on the
+	// cart page.
 	String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
 	assertEquals(cartItemName, "Sauce Labs Backpack");
 
+	// Click on the checkout button
 	driver.findElement(By.id("checkout")).click();
+
+	// Wait until the checkout page is displayed
 	WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
 	wait.until(d -> checkoutPageElement.isDisplayed());
 
+	// Fill in the credentials
         driver.findElement(By.id("first-name")).sendKeys("John");
         driver.findElement(By.id("last-name")).sendKeys("Doe");
         driver.findElement(By.id("postal-code")).sendKeys("10001");
         driver.findElement(By.id("continue")).click();
 
+	// Assert that the checkout item name is correct
         String checkoutItemName = driver.findElement(By.className("inventory_item_name")).getText();
         assertEquals(checkoutItemName, "Sauce Labs Backpack");
 
+	// Click on the finish button
         driver.findElement(By.id("finish")).click();
 
+	// Assert that the success page is visible
         boolean successIsDisplayed = driver.findElement(By.id("checkout_complete_container")).isDisplayed();
         assertTrue(successIsDisplayed);
     }

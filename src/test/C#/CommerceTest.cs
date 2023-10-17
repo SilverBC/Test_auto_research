@@ -57,6 +57,12 @@ public class CommerceTest
         driver.Quit();
     }
 
+
+    // FIXME: Public method 'SetUp' on test class 'CommerceTest' should be marked as a Theory. (https://xunit.github.io/xunit.analyzers/rules/xUnit1013)
+
+
+    // TODO: Change all invocations of teardown to Aftertest or smth.
+
     [Fact]
     public void BuyBackpack()
     {
@@ -65,9 +71,11 @@ public class CommerceTest
 
 	// Click "Add to cart" for the backpack item
         driver.FindElement(By.Id("add-to-cart-sauce-labs-backpack")).Click();
-        driver.FindElement(By.Id("shopping_cart_container")).Click();
 
 	// Click on the cart icon
+        driver.FindElement(By.Id("shopping_cart_container")).Click();
+
+	// Explicit wait until the page is loaded.
         IWebElement cartPageElement = driver.FindElement(By.ClassName("cart_list"));
         wait.Until(d => cartPageElement.Displayed);
 
