@@ -48,30 +48,43 @@ class TestCommerce():
         self.log_out()
         self.driver.quit()
 
-    def test_commerce(self):
+    def buy_backpack(self):
 
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
 
+        # Click "Add to cart" for the backpack item
         self.driver.find_element(By.ID, "add-to-cart-sauce-labs-backpack").click()
+        # Click on the cart icon
         self.driver.find_element(By.ID, "shopping_cart_container").click()
 
+        # Explicit wait until the page is loaded.
         cart_page_element = self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "cart_list")))
+
+        # Assert that the item name is correctly displayed on the
+        # cart page.
         cart_item_name = self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text
         assert cart_item_name == "Sauce Labs Backpack"
 
+        # Click on the checkout button
         self.driver.find_element(By.ID, "checkout").click()
+        # Wait until the checkout page is displayed
         checkout_page_element = self.wait.until(EC.visibility_of_element_located((By.ID, "checkout_info_container")))
 
+        # Fill in the credentials
         self.driver.find_element(By.ID, "first-name").send_keys("John")
         self.driver.find_element(By.ID, "last-name").send_keys("Doe")
         self.driver.find_element(By.ID, "postal-code").send_keys("10001")
         self.driver.find_element(By.ID, "continue").click()
 
+        # Assert that the checkout item name is correct
         checkout_item_name = self.driver.find_element(By.CLASS_NAME, "inventory_item_name").text
         assert checkout_item_name == "Sauce Labs Backpack"
 
+        # Click on the finish button
         self.driver.find_element(By.ID, "finish").click()
+
+        # Assert that the success page is visible
         success_is_displayed = self.driver.find_element(By.ID, "checkout_complete_container").is_displayed()
         assert success_is_displayed
 
@@ -218,7 +231,7 @@ class TestCommerce():
         assert self.driver.find_element(By.ID, "remove-test.allthethings()-t-shirt-(red)").is_displayed()
 
         self.tearDown()
-    
+        
     def test_assert_error_accessing_without_log_in(self):
         self.set_up("https://www.saucedemo.com/cart.html")  # Direct link provided here
 
@@ -284,6 +297,3 @@ class TestCommerce():
         assert success_is_displayed
 
         self.tearDown()
-
-# if __name__ == "__main__":
-#     unittest.main()

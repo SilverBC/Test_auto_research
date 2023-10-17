@@ -66,33 +66,46 @@ public class CommerceTest {
     }
 
     @Test
-    public void test() {
+    public void buy_backpack() {
         setUp("https://www.saucedemo.com");
         logIn(USERNAME, PASSWORD);
 
+	// Click "Add to cart" for the backpack item
         driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+
+	// Click on the cart icon
         driver.findElement(By.id("shopping_cart_container")).click();
 
+	// Explicit wait until the page is loaded.
         WebElement cartPageElement = driver.findElement(By.className("cart_list"));
         wait.until(d -> cartPageElement.isDisplayed());
 
+	// Assert that the item name is correctly displayed on the
+	// cart page.
 	String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
 	assertEquals(cartItemName, "Sauce Labs Backpack");
 
+	// Click on the checkout button
 	driver.findElement(By.id("checkout")).click();
+
+	// Wait until the checkout page is displayed
 	WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
 	wait.until(d -> checkoutPageElement.isDisplayed());
 
+	// Fill in the credentials
         driver.findElement(By.id("first-name")).sendKeys("John");
         driver.findElement(By.id("last-name")).sendKeys("Doe");
         driver.findElement(By.id("postal-code")).sendKeys("10001");
         driver.findElement(By.id("continue")).click();
 
+	// Assert that the checkout item name is correct
         String checkoutItemName = driver.findElement(By.className("inventory_item_name")).getText();
         assertEquals(checkoutItemName, "Sauce Labs Backpack");
 
+	// Click on the finish button
         driver.findElement(By.id("finish")).click();
 
+	// Assert that the success page is visible
         boolean successIsDisplayed = driver.findElement(By.id("checkout_complete_container")).isDisplayed();
         assertTrue(successIsDisplayed);
     }
@@ -122,11 +135,10 @@ public class CommerceTest {
         actions.moveToElement(driver.findElement(By.className("social_linkedin")));
         //Go to Linkedin page
         driver.findElement(By.className("social_linkedin")).click();;
-
-        //Verify you are on the Linkedin page
         List<String> tabList = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabList.get(1)); 
 
+        //Verify you are on the Linkedin page
         assertEquals("https://www.linkedin.com/company/sauce-labs/", driver.getCurrentUrl());
         driver.close();
         driver.switchTo().window(tabList.get(0));

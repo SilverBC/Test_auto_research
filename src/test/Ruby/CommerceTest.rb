@@ -41,32 +41,45 @@ class CommerceTest < Test::Unit::TestCase
     @driver.quit
   end
 
-  def test_commerce
+  def buy_backpack
     setup_driver('https://www.saucedemo.com')
     log_in(USERNAME, PASSWORD)
 
+    # Click "Add to cart" for the backpack item
     @driver.find_element(id: 'add-to-cart-sauce-labs-backpack').click
+    # Click on the cart icon
     @driver.find_element(id: 'shopping_cart_container').click
 
+    # Explicit wait until the page is loaded.
     cart_page_element = @driver.find_element(class: 'cart_list')
     @wait.until { cart_page_element.displayed? }
 
+    # Assert that the item name is correctly displayed on the
+    # cart page.
     cart_item_name = @driver.find_element(class: 'inventory_item_name').text
     assert_equal(cart_item_name, 'Sauce Labs Backpack')
 
+    # Click on the checkout button
     @driver.find_element(id: 'checkout').click
+
+    # Wait until the checkout page is displayed
     checkout_page_element = @driver.find_element(id: 'checkout_info_container')
     @wait.until { checkout_page_element.displayed? }
 
+    # Fill in the credentials
     @driver.find_element(id: 'first-name').send_keys('John')
     @driver.find_element(id: 'last-name').send_keys('Doe')
     @driver.find_element(id: 'postal-code').send_keys('10001')
     @driver.find_element(id: 'continue').click
 
+    # Assert that the checkout item name is correct
     checkout_item_name = @driver.find_element(class: 'inventory_item_name').text
     assert_equal(checkout_item_name, 'Sauce Labs Backpack')
 
+    # Click on the finish button
     @driver.find_element(id: 'finish').click
+
+    # Assert that the success page is visible
     success_is_displayed = @driver.find_element(id: 'checkout_complete_container').displayed?
     assert_true(success_is_displayed)
   end

@@ -45,38 +45,45 @@ describe('CommerceTest', function() {
         assert(elements.length > 0);
     }
 
-    // after(async function() {
-    // await logOut();
-    // await driver.quit();
-    // });
-
-    it('should run test', async function() {
+    it('buy backpack', async function() {
         await setUp('https://www.saucedemo.com');
         await logIn(USERNAME, PASSWORD);
 
+	// Click "Add to cart" for the backpack item
         await driver.findElement(By.id('add-to-cart-sauce-labs-backpack')).click();
+	// Click on the cart icon
         await driver.findElement(By.id('shopping_cart_container')).click();
 
+	// Explicit wait until the page is loaded.
         const cartPageElement = await driver.findElement(By.className('cart_list'));
         await wait(until.elementIsVisible(cartPageElement), 10000);
 
+	// Assert that the item name is correctly displayed on the
+	// cart page.
         const cartItemName = await driver.findElement(By.className('inventory_item_name')).getText();
         assert.strictEqual(cartItemName, 'Sauce Labs Backpack');
 
+	// Click on the checkout button
         await driver.findElement(By.id('checkout')).click();
+
+	// Wait until the checkout page is displayed
         const checkoutPageElement = await driver.findElement(By.id('checkout_info_container'));
         await wait(until.elementIsVisible(checkoutPageElement), 10000);
 
+	// Fill in the credentials
         await driver.findElement(By.id('first-name')).sendKeys('John');
         await driver.findElement(By.id('last-name')).sendKeys('Doe');
         await driver.findElement(By.id('postal-code')).sendKeys('10001');
         await driver.findElement(By.id('continue')).click();
 
+	// Assert that the checkout item name is correct
         const checkoutItemName = await driver.findElement(By.className('inventory_item_name')).getText();
         assert.strictEqual(checkoutItemName, 'Sauce Labs Backpack');
 
+	// Click on the finish button
         await driver.findElement(By.id('finish')).click();
 
+	// Assert that the success page is visible
         const successIsDisplayed = await driver.findElement(By.id('checkout_complete_container')).isDisplayed();
         assert(successIsDisplayed);
 
@@ -88,8 +95,11 @@ describe('CommerceTest', function() {
 	await setUp('https://www.saucedemo.com');
 	await logIn(USERNAME, PASSWORD);
 	
+        //go to the item
 	await driver.findElement(By.id('item_4_title_link')).click();
 	
+        //Check that texts exist on the site 
+        // Sauce Labs Backpack
 	const itemName = await driver.findElement(By.className('inventory_details_name')).getText();
 	assert.strictEqual(itemName, 'Sauce Labs Backpack');
 	
@@ -105,13 +115,16 @@ describe('CommerceTest', function() {
 	await setUp('https://www.saucedemo.com');
 	await logIn(USERNAME, PASSWORD);
 	
+        //Scroll down
 	const linkedInElement = await driver.findElement(By.className('social_linkedin'));
 	await driver.actions().move({origin: linkedInElement}).click().perform();	
 
+        //Go to Linkedin page
 	const handles = await driver.getAllWindowHandles();
 	console.log("Window handles: ", handles);
 	await driver.switchTo().window(handles[1]);
 	
+        //Verify you are on the Linkedin page
 	const currentURL = await driver.getCurrentUrl();
 	assert.strictEqual(currentURL, 'https://www.linkedin.com/company/sauce-labs/');
 	
@@ -194,6 +207,7 @@ describe('CommerceTest', function() {
         await setUp('https://www.saucedemo.com');
         await logIn(USERNAME, PASSWORD);
 
+        //Add items to cart
         const backpackButton = await driver.findElement(By.id('add-to-cart-sauce-labs-backpack'));
         await driver.actions().move({origin: backpackButton}).perform();
         await backpackButton.click();
@@ -204,6 +218,7 @@ describe('CommerceTest', function() {
 
         await logOut();
 
+        //check that items are still in the cart
         await logIn(USERNAME, PASSWORD);
         const cartBadgeText = await driver.findElement(By.className('shopping_cart_badge')).getText();
         assert.strictEqual(cartBadgeText, '2');
@@ -216,13 +231,16 @@ describe('CommerceTest', function() {
         await setUp('https://www.saucedemo.com');
         await logIn(USERNAME, PASSWORD);
 
+        //select all items
         const addButtons = await driver.findElements(By.css("[id^=add-to-cart]"));
         for(let button of addButtons) {
             await driver.actions().move({origin: button}).perform();
             await button.click();
         }
 
+        //click on sidebar
         await driver.findElement(By.id('react-burger-menu-btn')).click();
+        //click on Reset App State
         await driver.findElement(By.id('reset_sidebar_link')).click();
         // Click on the close sidebar button using JS.
         // This was necessary because normal click was not waiting 
@@ -230,6 +248,7 @@ describe('CommerceTest', function() {
         // element click interception.
         await driver.executeScript("arguments[0].click()", driver.findElement(By.id('react-burger-cross-btn')));
 
+        //check that the app reset but that there is a bug with "Remove" still staying instead of resetting to Add Cart
         const cartBadges = await driver.findElements(By.className('shopping_cart_badge'));
         assert(cartBadges.length < 1);
 
@@ -247,14 +266,17 @@ describe('CommerceTest', function() {
     it('Assert Error Accessing Without Log In', async function() {
         await setUp('https://www.saucedemo.com/cart.html');  // Direct link
 
+        //assert that the error is the correct one
         const errorMessage = await driver.findElement(By.className('error-message-container')).getText();
         const expectedMessage = "Epic sadface: You can only access '/cart.html' when you are logged in.";
         assert.strictEqual(errorMessage, expectedMessage);
 
         await logIn(USERNAME, PASSWORD);
 
+        //now try logging in and then jumping to a link
         await driver.get('https://www.saucedemo.com/cart.html');
 
+        //assert that it worked when you were logged in
         const cartContainerDisplayed = await driver.findElement(By.id('cart_contents_container')).isDisplayed();
         assert(cartContainerDisplayed);
 
@@ -272,10 +294,12 @@ describe('CommerceTest', function() {
         await driver.findElement(By.id('user-name')).sendKeys(Key.CONTROL + "a", Key.BACK_SPACE);
         await driver.findElement(By.id('password')).sendKeys(Key.CONTROL + "a", Key.BACK_SPACE);
 
+        //assert the error
         const errorMessage = await driver.findElement(By.className('error-message-container')).getText();
         const expectedMessage = "Epic sadface: Sorry, this user has been locked out.";
         assert.strictEqual(errorMessage, expectedMessage);
 
+        //attempt to get in with the normal user
         await logIn(USERNAME, PASSWORD);
 
 	await logOut();
@@ -286,6 +310,7 @@ describe('CommerceTest', function() {
         await setUp('https://www.saucedemo.com');
         await logIn(GLITCHUSERNAME, PASSWORD);
 
+        //jump in with the Glitched user 
         await driver.findElement(By.id('add-to-cart-sauce-labs-backpack')).click();
         await driver.findElement(By.id('shopping_cart_container')).click();
 

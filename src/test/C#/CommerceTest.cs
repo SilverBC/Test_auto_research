@@ -58,34 +58,45 @@ public class CommerceTest
     }
 
     [Fact]
-    public void Test()
+    public void BuyBackpack()
     {
         SetUp("https://www.saucedemo.com");
         LogIn(USERNAME, PASSWORD);
 
+	// Click "Add to cart" for the backpack item
         driver.FindElement(By.Id("add-to-cart-sauce-labs-backpack")).Click();
         driver.FindElement(By.Id("shopping_cart_container")).Click();
 
+	// Click on the cart icon
         IWebElement cartPageElement = driver.FindElement(By.ClassName("cart_list"));
         wait.Until(d => cartPageElement.Displayed);
 
+	// Assert that the item name is correctly displayed on the
+	// cart page.
         string cartItemName = driver.FindElement(By.ClassName("inventory_item_name")).Text;
         Assert.Equal("Sauce Labs Backpack", cartItemName);
 
+	// Click on the checkout button
         driver.FindElement(By.Id("checkout")).Click();
+
+	// Wait until the checkout page is displayed
         IWebElement checkoutPageElement = driver.FindElement(By.Id("checkout_info_container"));
         wait.Until(d => checkoutPageElement.Displayed);
 
+	// Fill in the credentials
         driver.FindElement(By.Id("first-name")).SendKeys("John");
         driver.FindElement(By.Id("last-name")).SendKeys("Doe");
         driver.FindElement(By.Id("postal-code")).SendKeys("10001");
         driver.FindElement(By.Id("continue")).Click();
 
+	// Assert that the checkout item name is correct
         string checkoutItemName = driver.FindElement(By.ClassName("inventory_item_name")).Text;
         Assert.Equal("Sauce Labs Backpack", checkoutItemName);
 
+	// Click on the finish button
         driver.FindElement(By.Id("finish")).Click();
 
+	// Assert that the success page is visible
         bool successIsDisplayed = driver.FindElement(By.Id("checkout_complete_container")).Displayed;
         Assert.True(successIsDisplayed);
 
