@@ -47,12 +47,12 @@ jobs:
           dotnet-version: 7.0
           dotnet-quality: ga
       - name: Set up node.js
-        if: ${{ matrix.language == 'js' }}
+        if: ${{ matrix.language == 'javascript' }}
         uses: actions/setup-node@v3
         with:
           node-version: 18.18.1
       - name: Download npm dependencies
-        if: ${{ matrix.language == 'js' }}
+        if: ${{ matrix.language == 'javascript' }}
         run: |
           cd src/test/JavaScript; npm install; cd -
       - name: Set up python
