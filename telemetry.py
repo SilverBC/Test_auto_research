@@ -24,7 +24,7 @@ launch_scripts = {
     "java_comp": shlex.split("mvn -B clean test"),
     "c_sharp": shlex.split("dotnet test --logger \"trx;LogFileName=testResults.trx\" src/test/C\\#/packages.csproj"),
     "c_sharp_comp": shlex.split("dotnet test --logger \"trx;LogFileName=testResults.trx\" src/test/C\\#/packages.csproj"),
-    "js": shlex.split("npm --prefix src/test/JavaScript test"),
+    "javascript": shlex.split("npm --prefix src/test/JavaScript test"),
     "python": shlex.split("pipenv run pytest src/test/python/CommerceTest.py"),
     "ruby": shlex.split("ruby src/test/Ruby/CommerceTest.rb")
 }
@@ -93,7 +93,7 @@ def parse_test_execution_time(language, stdout_text):
     elif language == "c_sharp" or language == "c_sharp_comp":
         parse_result = parse_test_run_xml()
         result = parse_result
-    elif language == "js":
+    elif language == "javascript":
         parse_result = parse_ms_via_regexp(r"\((\d+)ms\)", stdout_text)
         result = parse_result
     elif language == "python":
