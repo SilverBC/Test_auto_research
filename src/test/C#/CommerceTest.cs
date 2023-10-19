@@ -19,7 +19,7 @@ public class CommerceTest
     private WebDriverWait wait;
     private Actions actions;
 
-    public void SetUp(string url)
+    private void SetUp(string url)
     {
         ChromeOptions options = new ChromeOptions();
         options.AddArguments("--headless=new"); // Uncomment if you want to run headless
@@ -32,26 +32,26 @@ public class CommerceTest
         actions = new Actions(driver);
     }
 
-    public void LogIn(string name, string password)
+    private void LogIn(string name, string password)
     {
         driver.FindElement(By.Id("user-name")).SendKeys(name);
         driver.FindElement(By.Id("password")).SendKeys(password);
         driver.FindElement(By.Id("login-button")).Click();
 
-        IReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("inventory_container"));
-        Assert.True(elements.Count > 0);
+	// Assert that the store page became visible
+        Assert.True(driver.FindElement(By.Id("inventory_container")).Displayed);
     }
 
-    public void LogOut()
+    private void LogOut()
     {
         driver.FindElement(By.Id("react-burger-menu-btn")).Click();
         driver.FindElement(By.Id("logout_sidebar_link")).Click();
 
-        IReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("login_container"));
-        Assert.True(elements.Count > 0);
+	// Assert that the login page is visible
+        Assert.True(driver.FindElement(By.ClassName("login_container")).Displayed);
     }
 
-    public void Teardown()
+    private void Teardown()
     {
         LogOut();
         driver.Quit();
@@ -65,9 +65,11 @@ public class CommerceTest
 
 	// Click "Add to cart" for the backpack item
         driver.FindElement(By.Id("add-to-cart-sauce-labs-backpack")).Click();
-        driver.FindElement(By.Id("shopping_cart_container")).Click();
 
 	// Click on the cart icon
+        driver.FindElement(By.Id("shopping_cart_container")).Click();
+
+	// Explicit wait until the page is loaded.
         IWebElement cartPageElement = driver.FindElement(By.ClassName("cart_list"));
         wait.Until(d => cartPageElement.Displayed);
 

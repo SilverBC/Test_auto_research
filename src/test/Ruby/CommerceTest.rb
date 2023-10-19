@@ -24,16 +24,16 @@ class CommerceTest < Test::Unit::TestCase
     @driver.find_element(id: 'password').send_keys(password)
     @driver.find_element(id: 'login-button').click
 
-    elements = @driver.find_elements(id: 'inventory_container')
-    assert_true(elements.size > 0)
+    # Assert that the store page became visible
+    assert_true(@driver.find_element(id: 'inventory_container').displayed?)
   end
 
   def log_out
     @driver.find_element(id: 'react-burger-menu-btn').click
     @driver.find_element(id: 'logout_sidebar_link').click
 
-    elements = @driver.find_elements(class: 'login_container')
-    assert_true(elements.size > 0)
+    # Assert that the login page is visible
+    assert_true(@driver.find_element(class: 'login_container').displayed?)
   end
 
   def teardown
@@ -41,7 +41,7 @@ class CommerceTest < Test::Unit::TestCase
     @driver.quit
   end
 
-  def buy_backpack
+  def test_buy_backpack
     setup_driver('https://www.saucedemo.com')
     log_in(USERNAME, PASSWORD)
 

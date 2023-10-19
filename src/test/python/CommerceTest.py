@@ -5,7 +5,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-
 class TestCommerce():
     
     USERNAME = "standard_user"
@@ -34,6 +33,7 @@ class TestCommerce():
         self.driver.find_element(By.ID, "password").send_keys(password)
         self.driver.find_element(By.ID, "login-button").click()
 
+        # Assert that the store page became visible
         elements = self.driver.find_elements(By.ID, "inventory_container")
         assert len(elements) > 0
 
@@ -41,14 +41,15 @@ class TestCommerce():
         self.driver.find_element(By.ID, "react-burger-menu-btn").click()
         self.driver.find_element(By.ID, "logout_sidebar_link").click()
 
+        # Assert that the login page is visible
         elements = self.driver.find_elements(By.CLASS_NAME, "login_container")
         assert len(elements) > 0
         
-    def tearDown(self):
+    def teardown_method(self):
         self.log_out()
         self.driver.quit()
 
-    def buy_backpack(self):
+    def test_buy_backpack(self):
 
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
@@ -88,8 +89,6 @@ class TestCommerce():
         success_is_displayed = self.driver.find_element(By.ID, "checkout_complete_container").is_displayed()
         assert success_is_displayed
 
-        self.tearDown()      
-        
     def test_assert_item_name_on_item_info_page(self):
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
@@ -104,8 +103,6 @@ class TestCommerce():
         expected_desc = "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection."
         assert self.driver.find_element(By.CLASS_NAME, "inventory_details_desc").text == expected_desc
         
-        self.tearDown()
-
     def test_move_to_linkedin(self):
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
@@ -124,8 +121,6 @@ class TestCommerce():
         self.driver.close()
         self.driver.switch_to.window(tab_list[0])
 
-        self.tearDown()    
-        
     def test_assert_sorting(self):
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
@@ -157,7 +152,6 @@ class TestCommerce():
         self.driver.find_element(By.CSS_SELECTOR, "option[value='lohi']").click()
         # check that the name at the top is "Sauce Labs Fleece Jacket"
         assert self.driver.find_element(By.CSS_SELECTOR, ".inventory_item_name").text == "Sauce Labs Onesie"
-        self.tearDown()
 
     def test_assert_shopping_button_states(self):
         self.set_up("https://www.saucedemo.com")
@@ -180,7 +174,6 @@ class TestCommerce():
 
         # check that the cart button says nothing
         assert len(self.driver.find_elements(By.CLASS_NAME, "shopping_cart_badge")) < 1
-        self.tearDown()
 
     def test_assert_user_log_in_cache_permanency(self):
         self.set_up("https://www.saucedemo.com")
@@ -198,7 +191,6 @@ class TestCommerce():
         self.log_in(self.USERNAME, self.PASSWORD)
 
         assert self.driver.find_element(By.CLASS_NAME, "shopping_cart_badge").text == "2"
-        self.tearDown()
 
     def test_assert_app_reset_functionality(self):  # flaky test
         self.set_up("https://www.saucedemo.com")
@@ -230,8 +222,6 @@ class TestCommerce():
         assert self.driver.find_element(By.ID, "remove-sauce-labs-onesie").is_displayed()
         assert self.driver.find_element(By.ID, "remove-test.allthethings()-t-shirt-(red)").is_displayed()
 
-        self.tearDown()
-        
     def test_assert_error_accessing_without_log_in(self):
         self.set_up("https://www.saucedemo.com/cart.html")  # Direct link provided here
 
@@ -246,7 +236,6 @@ class TestCommerce():
 
         # Assert that it worked when you were logged in
         assert self.driver.find_element(By.ID, "cart_contents_container").is_displayed()
-        self.tearDown()
 
     def test_assert_locked_out_user(self):
         self.set_up("https://www.saucedemo.com")
@@ -268,10 +257,7 @@ class TestCommerce():
         # Attempt to log in with the normal user
         self.log_in(self.USERNAME, self.PASSWORD)
         
-        self.tearDown()
-        
     def test_glitched_User_Experience(self):
-
         self.set_up("https://www.saucedemo.com")
         self.log_in(self.USERNAME, self.PASSWORD)
 
@@ -295,5 +281,3 @@ class TestCommerce():
         self.driver.find_element(By.ID, "finish").click()
         success_is_displayed = self.driver.find_element(By.ID, "checkout_complete_container").is_displayed()
         assert success_is_displayed
-
-        self.tearDown()

@@ -1,5 +1,5 @@
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -16,8 +16,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommerceTest {
     final String USERNAME = "standard_user";
@@ -47,19 +47,19 @@ public class CommerceTest {
         driver.findElement(By.id("password")).sendKeys(password);
         driver.findElement(By.id("login-button")).click();
 
-        List<WebElement> elements = driver.findElements(By.id("inventory_container"));
-        assertTrue(elements.size() > 0);
+	// Assert that the store page became visible
+	assertTrue(driver.findElement(By.id("inventory_container")).isDisplayed());
     }
 
     public void logOut(){
         driver.findElement(By.id("react-burger-menu-btn")).click();
         driver.findElement(By.id("logout_sidebar_link")).click();
         
-        List<WebElement> elements = driver.findElements(By.className("login_container"));
-        assertTrue(elements.size() > 0);
+	// Assert that the login page is visible
+	assertTrue(driver.findElement(By.className("login_container")).isDisplayed());
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         logOut();
         driver.quit();
@@ -287,32 +287,46 @@ public class CommerceTest {
     @Test
     public void Glitched_User_Experience(){
         setUp("https://www.saucedemo.com");
+
+        //jump in with the Glitched user
         logIn(GLITCHUSERNAME, PASSWORD);
 
-        //jump in with the Glitched user 
+	// Click "Add to cart" for the backpack item
         driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+
+	// Click on the cart icon
         driver.findElement(By.id("shopping_cart_container")).click();
 
+	// Explicit wait until the page is loaded.
         WebElement cartPageElement = driver.findElement(By.className("cart_list"));
         wait.until(d -> cartPageElement.isDisplayed());
 
+	// Assert that the item name is correctly displayed on the
+	// cart page.
 	String cartItemName = driver.findElement(By.className("inventory_item_name")).getText();
 	assertEquals(cartItemName, "Sauce Labs Backpack");
 
+	// Click on the checkout button
 	driver.findElement(By.id("checkout")).click();
+
+	// Wait until the checkout page is displayed
 	WebElement checkoutPageElement = driver.findElement(By.id("checkout_info_container"));
 	wait.until(d -> checkoutPageElement.isDisplayed());
 
+	// Fill in the credentials
         driver.findElement(By.id("first-name")).sendKeys("John");
         driver.findElement(By.id("last-name")).sendKeys("Doe");
         driver.findElement(By.id("postal-code")).sendKeys("10001");
         driver.findElement(By.id("continue")).click();
 
+	// Assert that the checkout item name is correct
         String checkoutItemName = driver.findElement(By.className("inventory_item_name")).getText();
         assertEquals(checkoutItemName, "Sauce Labs Backpack");
 
+	// Click on the finish button
         driver.findElement(By.id("finish")).click();
 
+	// Assert that the success page is visible
         boolean successIsDisplayed = driver.findElement(By.id("checkout_complete_container")).isDisplayed();
         assertTrue(successIsDisplayed);
     }
