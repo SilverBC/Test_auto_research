@@ -1,5 +1,5 @@
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -16,8 +16,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommerceTest {
     final String USERNAME = "standard_user";
@@ -47,19 +47,19 @@ public class CommerceTest {
         driver.findElement(By.id("password")).sendKeys(password);
         driver.findElement(By.id("login-button")).click();
 
-        List<WebElement> elements = driver.findElements(By.id("inventory_container"));
-        assertTrue(elements.size() > 0);
+	// Assert that the store page became visible
+	assertTrue(driver.findElement(By.id("inventory_container")).isDisplayed());
     }
 
     public void logOut(){
         driver.findElement(By.id("react-burger-menu-btn")).click();
         driver.findElement(By.id("logout_sidebar_link")).click();
         
-        List<WebElement> elements = driver.findElements(By.className("login_container"));
-        assertTrue(elements.size() > 0);
+	// Assert that the login page is visible
+	assertTrue(driver.findElement(By.className("login_container")).isDisplayed());
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         logOut();
         driver.quit();

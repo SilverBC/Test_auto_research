@@ -33,17 +33,22 @@ describe('CommerceTest', function() {
         await driver.findElement(By.id('password')).sendKeys(password);
         await driver.findElement(By.id('login-button')).click();
 
-        const elements = await driver.findElements(By.id('inventory_container'));
-        assert(elements.length > 0);
+	// Assert that the store page became visible
+        assert(await driver.findElement(By.id('inventory_container')).isDisplayed());
     }
 
     async function logOut() {
         await driver.findElement(By.id('react-burger-menu-btn')).click();
         await driver.findElement(By.id('logout_sidebar_link')).click();
 
-        const elements = await driver.findElements(By.className('login_container'));
-        assert(elements.length > 0);
+	// Assert that the login page is visible
+        assert(await driver.findElement(By.className('login_container')).isDisplayed());
     }
+
+    afterEach(async function() {
+	await logOut();
+        await driver.quit();
+    })
 
     it('buy backpack', async function() {
         await setUp('https://www.saucedemo.com');
@@ -86,9 +91,6 @@ describe('CommerceTest', function() {
 	// Assert that the success page is visible
         const successIsDisplayed = await driver.findElement(By.id('checkout_complete_container')).isDisplayed();
         assert(successIsDisplayed);
-
-	await logOut();
-        await driver.quit();
     });
 
     it('assert item name on item info page', async function() {
@@ -101,16 +103,10 @@ describe('CommerceTest', function() {
         //Check that texts exist on the site 
         // Sauce Labs Backpack
 
-	// TODO: bring this in and see if it works
-	const itemName = await driver.findElement(By.className('inventory_details_name')).getText();
-	assert.strictEqual(itemName, 'Sauce Labs Backpack');
+	assert.strictEqual(await driver.findElement(By.className('inventory_details_name')).getText(), 'Sauce Labs Backpack');
 	
-	const itemDesc = await driver.findElement(By.className('inventory_details_desc')).getText();
 	const expectedDesc = "carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.";
-	assert.strictEqual(itemDesc, expectedDesc);
-
-	await logOut();
-        await driver.quit();
+	assert.strictEqual(await driver.findElement(By.className('inventory_details_desc')).getText(), expectedDesc);
     });
     
     it('Move To LinkedIn', async function() {
@@ -123,7 +119,6 @@ describe('CommerceTest', function() {
 
         //Go to Linkedin page
 	const handles = await driver.getAllWindowHandles();
-	console.log("Window handles: ", handles);
 	await driver.switchTo().window(handles[1]);
 	
         //Verify you are on the Linkedin page
@@ -132,9 +127,6 @@ describe('CommerceTest', function() {
 	
 	await driver.close();
 	await driver.switchTo().window(handles[0]);
-
-	await logOut();
-        await driver.quit();
     });
 
     it('Assert Sorting', async function() {
@@ -172,9 +164,6 @@ describe('CommerceTest', function() {
 	// Check that the name at the top is "Sauce Labs Fleece Jacket"
 	itemName = await driver.findElement(By.css(".inventory_item_name")).getText();
 	assert.strictEqual(itemName, "Sauce Labs Onesie");
-	
-	await logOut();
-        await driver.quit();
     });
     
     it('Assert Shopping Button States', async function() {
@@ -200,9 +189,6 @@ describe('CommerceTest', function() {
 	// Check that the cart button says nothing
 	let cartBadges = await driver.findElements(By.className("shopping_cart_badge"));
 	assert(cartBadges.length < 1);
-	
-	await logOut();
-        await driver.quit();
     });
     
     it('Assert User Log In Cache Permanency', async function() { 
@@ -224,9 +210,6 @@ describe('CommerceTest', function() {
         await logIn(USERNAME, PASSWORD);
         const cartBadgeText = await driver.findElement(By.className('shopping_cart_badge')).getText();
         assert.strictEqual(cartBadgeText, '2');
-
-	await logOut();
-        await driver.quit();
     });
 
     it('Assert App Reset Functionality', async function() {   //flaky test
@@ -260,9 +243,6 @@ describe('CommerceTest', function() {
         assert(await driver.findElement(By.id('remove-sauce-labs-fleece-jacket')).isDisplayed());
         assert(await driver.findElement(By.id('remove-sauce-labs-onesie')).isDisplayed());
         assert(await driver.findElement(By.id('remove-test.allthethings()-t-shirt-(red)')).isDisplayed());
-
-        await logOut();
-        await driver.quit();
     });
 
     it('Assert Error Accessing Without Log In', async function() {
@@ -281,9 +261,6 @@ describe('CommerceTest', function() {
         //assert that it worked when you were logged in
         const cartContainerDisplayed = await driver.findElement(By.id('cart_contents_container')).isDisplayed();
         assert(cartContainerDisplayed);
-
-	await logOut();
-        await driver.quit();
     });
 
     it('Assert Locked Out User', async function() {
@@ -303,9 +280,6 @@ describe('CommerceTest', function() {
 
         //attempt to get in with the normal user
         await logIn(USERNAME, PASSWORD);
-
-	await logOut();
-        await driver.quit();
     });
 
     it('Glitched User Experience', async function() {
@@ -338,9 +312,6 @@ describe('CommerceTest', function() {
 
         const successIsDisplayed = await driver.findElement(By.id('checkout_complete_container')).isDisplayed();
         assert(successIsDisplayed);
-
-	await logOut();
-        await driver.quit();
     });
 
 });

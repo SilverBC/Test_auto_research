@@ -19,7 +19,7 @@ public class CommerceTest
     private WebDriverWait wait;
     private Actions actions;
 
-    public void SetUp(string url)
+    private void SetUp(string url)
     {
         ChromeOptions options = new ChromeOptions();
         options.AddArguments("--headless=new"); // Uncomment if you want to run headless
@@ -32,36 +32,30 @@ public class CommerceTest
         actions = new Actions(driver);
     }
 
-    public void LogIn(string name, string password)
+    private void LogIn(string name, string password)
     {
         driver.FindElement(By.Id("user-name")).SendKeys(name);
         driver.FindElement(By.Id("password")).SendKeys(password);
         driver.FindElement(By.Id("login-button")).Click();
 
-        IReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("inventory_container"));
-        Assert.True(elements.Count > 0);
+	// Assert that the store page became visible
+        Assert.True(driver.FindElement(By.Id("inventory_container")).Displayed);
     }
 
-    public void LogOut()
+    private void LogOut()
     {
         driver.FindElement(By.Id("react-burger-menu-btn")).Click();
         driver.FindElement(By.Id("logout_sidebar_link")).Click();
 
-        IReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("login_container"));
-        Assert.True(elements.Count > 0);
+	// Assert that the login page is visible
+        Assert.True(driver.FindElement(By.ClassName("login_container")).Displayed);
     }
 
-    public void Teardown()
+    private void Teardown()
     {
         LogOut();
         driver.Quit();
     }
-
-
-    // FIXME: Public method 'SetUp' on test class 'CommerceTest' should be marked as a Theory. (https://xunit.github.io/xunit.analyzers/rules/xUnit1013)
-
-
-    // TODO: Change all invocations of teardown to Aftertest or smth.
 
     [Fact]
     public void BuyBackpack()
