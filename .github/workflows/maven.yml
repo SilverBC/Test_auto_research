@@ -9,8 +9,8 @@
 name: Java CI with Maven
 
 on:
-  # push:
-  #   branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
   schedule:
@@ -24,7 +24,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        language: [java, java_comp, c_sharp, c_sharp_comp, js, python, ruby]
+        language: [java, java_comp, c_sharp, c_sharp_comp, javascript, python, ruby]
     steps:
       - uses: actions/checkout@v3
       - name: Install Google Chrome
@@ -82,7 +82,7 @@ jobs:
       - name: Upload test result artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: real-test-run
+          name: test-run
           path: |
             *.csv
       - name: Clean up; delete already uploaded csv files
