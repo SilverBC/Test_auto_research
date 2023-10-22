@@ -1,8 +1,8 @@
-from datetime import datetime
 from dateutil.parser import isoparse
 import csv
 import decimal
 import os
+from pathlib import Path
 import psutil
 import re
 import shlex
@@ -65,6 +65,24 @@ def parse_ms_via_regexp(regexp, input_str):
     else:
         return -1
 
+def parse_java_xml():
+    xml_path = "target/surefire-reports/TEST-CommerceTest.xml"
+    if Path(xml_path).is_file():
+        xml_tree = ET.parse(xml_path)
+        test_suite_node = xml_tree.find(".")
+        if test_suite_node is not None:
+            time_param = test_suite_node.get("time")
+            if time_param is not None:
+                time_d = decimal.Decimal(time_param) * 1000
+                return int(time_d)
+            else:
+                print("WARNING: could not parse java xml file, problem with time parameter!")
+        else:
+            print("WARNING: could not parse java xml file, problem with file!")
+    else:
+        print("WARNING: could not parse java xml file, it doesn't exist!")
+    return -1
+
 def parse_test_run_xml():
     xml_tree = ET.parse("src/test/C#/TestResults/testResults.trx")
     # For some bizarre reason, this expression works instead of
@@ -88,7 +106,7 @@ def parse_test_execution_time(language, stdout_text):
     result = -1
 
     if language == "java" or language == "java_comp":
-        parse_result = parse_seconds_via_regexp(r"Total time:\s+(\d+\.\d+) s", stdout_text)
+        parse_result = parse_java_xml()
         result = parse_result
     elif language == "c_sharp" or language == "c_sharp_comp":
         parse_result = parse_test_run_xml()
