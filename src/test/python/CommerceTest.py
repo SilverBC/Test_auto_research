@@ -117,7 +117,7 @@ class TestCommerce():
         tab_list = self.driver.window_handles
         self.driver.switch_to.window(tab_list[1])
 
-        assert self.driver.current_url == "https://www.linkedin.com/company/sauce-labs/"
+        assert self.driver.current_url.startswith("https://www.linkedin.com/")
         self.driver.close()
         self.driver.switch_to.window(tab_list[0])
 

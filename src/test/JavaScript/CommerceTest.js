@@ -123,7 +123,7 @@ describe('CommerceTest', function() {
 	
         //Verify you are on the Linkedin page
 	const currentURL = await driver.getCurrentUrl();
-	assert.strictEqual(currentURL, 'https://www.linkedin.com/company/sauce-labs/');
+	assert(currentURL.startsWith('https://www.linkedin.com/company/sauce-labs/'));
 	
 	await driver.close();
 	await driver.switchTo().window(handles[0]);

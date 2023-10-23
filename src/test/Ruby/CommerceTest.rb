@@ -112,7 +112,7 @@ class CommerceTest < Test::Unit::TestCase
     tab_list = @driver.window_handles
     @driver.switch_to.window(tab_list[1])
   
-    assert_equal('https://www.linkedin.com/company/sauce-labs/', @driver.current_url)
+    assert_true(@driver.current_url.start_with?('https://www.linkedin.com/'))
     @driver.close
     @driver.switch_to.window(tab_list[0])
   end

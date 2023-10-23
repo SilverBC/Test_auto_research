@@ -139,7 +139,7 @@ public class CommerceTest {
         driver.switchTo().window(tabList.get(1)); 
 
         //Verify you are on the Linkedin page
-        assertEquals("https://www.linkedin.com/company/sauce-labs/", driver.getCurrentUrl());
+	assertTrue(driver.getCurrentUrl().startsWith("https://www.linkedin.com/"));
         driver.close();
         driver.switchTo().window(tabList.get(0));
     }

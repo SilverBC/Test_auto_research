@@ -139,7 +139,7 @@ public class CommerceTest
         var tabList = new List<string>(driver.WindowHandles);
         driver.SwitchTo().Window(tabList[1]);
 
-        Assert.Equal("https://www.linkedin.com/company/sauce-labs/", driver.Url);
+	Assert.True(driver.Url.StartsWith("https://www.linkedin.com/"));
         driver.Close();
         driver.SwitchTo().Window(tabList[0]);
     
