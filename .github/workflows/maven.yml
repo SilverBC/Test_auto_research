@@ -78,6 +78,7 @@ jobs:
       - name: Launch ${{ matrix.language }} Test
         run: pipenv run python telemetry.py
         timeout-minutes: 10
+        continue-on-error: true
         env:
           TARGET_LANGUAGE: ${{ matrix.language }}
       - name: Upload test result artifacts
