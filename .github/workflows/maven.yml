@@ -13,10 +13,10 @@ on:
   #   branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-  schedule:
-    # This schedule follows the California time (PDT [UTC-7]).
-    # Schedule on PDT: 03:00, 07:00, 11:00, 15:00, 19:00, 23:00
-    - cron: '*/20 02,06,10,14,18,22 * * *'
+  # schedule:
+  #   # This schedule follows the California time (PDT [UTC-7]).
+  #   # Schedule on PDT: 03:00, 07:00, 11:00, 15:00, 19:00, 23:00
+  #   - cron: '*/20 02,06,10,14,18,22 * * *'
 
 jobs:
   run_tests:
