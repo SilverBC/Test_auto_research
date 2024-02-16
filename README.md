@@ -30,9 +30,8 @@ Below is a high-level overview of the project's structure.
 # Running the tests
 
 **Attention**: for all of the instructions to work properly (except
-Java), you need to be located in the chosen language's source
-directory, except for Java and Python which should be run from the
-project root. For example, before running the ruby project, make
+Java and Python), you need to be located in the chosen language's
+source directory. For example, before running the ruby project, make
 sure to go into the `src/test/Ruby` directory.
 
 ## Java
