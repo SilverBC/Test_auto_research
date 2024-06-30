@@ -29,10 +29,42 @@ Below is a high-level overview of the project's structure.
 
 # Running the tests
 
-**Attention**: for all of the instructions to work properly (except
-Java and Python), you need to be located in the chosen language's
-source directory. For example, before running the ruby project, make
-sure to go into the `src/test/Ruby` directory.
+## Using pipenv
+
+First, make sure that python and pip are set up on your system.
+Then, install pipenv:
+
+```
+pip3 install --user pipenv
+```
+
+Then, use pipenv to download all the dependencies:
+
+```
+pipenv install
+```
+
+Finally, to run the tests, you need to specify the `TARGET_LANGUAGE`
+environment variable. On linux, this can be done like this:
+
+```bash
+TARGET_LANGUAGE=java pipenv run python telemetry.py
+```
+
+The `TARGET_LANGUAGE` variable can hold these values:
+
+- `java`
+- `java_comp`
+- `c_sharp`
+- `c_sharp_comp`
+- `javascript`
+- `python`
+- `ruby`
+
+**Attention**: for the language-specific instructions to work properly
+(except Java and Python), you need to be located in the chosen
+language's source directory. For example, before running the ruby
+project, make sure to go into the `src/test/Ruby` directory.
 
 ## Java
 
